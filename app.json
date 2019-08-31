@@ -1,0 +1,416 @@
+{
+	"id": "com.gruijter.openaq",
+	"version": "1.0.0",
+	"compatibility": ">=1.5.0",
+	"sdk": 2,
+	"name": {
+		"en": "Outdoor AirQuality"
+	},
+	"description": {
+		"en": "Outdoor Air quality monitor from OpenAQ.org",
+		"nl": "Buitenluchtkwaliteit meter van OpenAQ.org "
+	},
+	"tags": {
+		"en": [ "pm25", "pm10", "so2", "sulfur dioxide", "no2", "nitrogen dioxide", "o3", "ozone", "co", "carbon monoxide", "bc", "black carbon", "air quality", "openAQ" ],
+		"nl": [ "pm25", "pm10", "so2", "zwavel dioxide", "no2", "stikstof dioxide", "o3", "ozon", "co", "koolmonoxide", "bc", "zwarte koolstof", "luchtkwaliteit", "openAQ" ]
+	},
+	"category": [
+		"climate", "internet", "tools"
+	],
+	"permissions": [ "homey:manager:geolocation" ],
+	"images": {
+		"large": "/assets/images/large.png",
+		"small": "/assets/images/small.png"
+	},
+	"author": {
+		"name": "Robin Gruijter",
+		"email": "gruijter@hotmail.com"
+	},
+	"contributors": {
+		"developers": [{"name": "Robin de Gruijter","email": "gruijter@hotmail.com"}],
+		"translators": [{"name": "🇬🇧 Robin"},{"name": "🇳🇱 Robin"}]
+	},
+	"copyright": "Robin de Gruijter (gruijter@hotmail.com)",
+	"license": " GPL-3.0-or-later",
+	"contributing": {
+		"donate": {
+			"paypal": {
+				"username": "gruijter"
+			}
+		}
+	},
+	"bugs": {
+		"url": "https://github.com/gruijter/com.gruijter.openaq/issues"
+	},
+	"homeyCommunityTopicId": 17548,
+
+	"capabilities": {
+		"measure_pm10": {
+			"type": "number",
+			"title": {
+				"en": "PM10"
+			},
+			"units": {
+				"en": "µg/m³"
+			},
+			"insights": true,
+			"desc": {
+				"en": "Atmospheric Particulate Matter (μg/m3)",
+				"nl": "Deeltjesvormige luchtverontreiniging (μg/m3)",
+				"de": "Atmosphärischer Feinstaub (μg/m3)"
+			},
+			"decimals": 2,
+			"getable": true,
+			"setable": false,
+			"uiComponent": "sensor",
+			"icon": "./assets/measure_pm10.svg"
+		},
+		"measure_so2": {
+			"type": "number",
+			"title": {
+				"en": "SO2"
+			},
+			"units": {
+				"en": "µg/m³"
+			},
+			"insights": true,
+			"desc": {
+				"en": "SO2 - sulfur dioxide (μg/m3)"
+			},
+			"decimals": 2,
+			"getable": true,
+			"setable": false,
+			"uiComponent": "sensor",
+			"icon": "./assets/measure_so2.svg"
+		},
+		"measure_no2": {
+			"type": "number",
+			"title": {
+				"en": "NO2"
+			},
+			"units": {
+				"en": "µg/m³"
+			},
+			"insights": true,
+			"desc": {
+				"en": "NO2 - nitrogen dioxide (μg/m3)"
+			},
+			"decimals": 2,
+			"getable": true,
+			"setable": false,
+			"uiComponent": "sensor",
+			"icon": "./assets/measure_no2.svg"
+		},
+		"measure_o3": {
+			"type": "number",
+			"title": {
+				"en": "O3"
+			},
+			"units": {
+				"en": "µg/m³"
+			},
+			"insights": true,
+			"desc": {
+				"en": "O3 - ozone (μg/m3)"
+			},
+			"decimals": 2,
+			"getable": true,
+			"setable": false,
+			"uiComponent": "sensor",
+			"icon": "./assets/measure_o3.svg"
+		},
+		"measure_bc": {
+			"type": "number",
+			"title": {
+				"en": "BC"
+			},
+			"units": {
+				"en": "µg/m³"
+			},
+			"insights": true,
+			"desc": {
+				"en": "BC - black carbon (μg/m3)"
+			},
+			"decimals": 2,
+			"getable": true,
+			"setable": false,
+			"uiComponent": "sensor",
+			"icon": "./assets/measure_bc.svg"
+		}
+	},
+	"drivers": [
+		{
+			"id": "aq_monitor",
+			"name": {
+				"en": "AirQuality Monitor",
+				"nl": "Luchtkwaliteit Meter"
+			},
+			"images": {
+			 "large": "drivers/aq_monitor/assets/images/large.jpg",
+			 "small": "drivers/aq_monitor/assets/images/small.jpg"
+		 	},
+			"class": "sensor",
+			"capabilities": [ "measure_pm25", "measure_pm10", "measure_so2", "measure_no2", "measure_o3", "measure_co", "measure_bc" ],
+			"capabilitiesOptions": {
+				"measure_pm25": {
+					"units": {
+						"en": "µg/m³"
+					}
+				},
+				"measure_co": {
+					"units": {
+						"en": "µg/m³"
+					}
+				}
+			},
+			"mobile": {
+				"components": [
+					{
+						"id": "icon"
+					},
+					{
+						"id": "sensor",
+						"capabilities": [ "measure_pm25", "measure_pm10", "measure_so2", "measure_no2", "measure_o3", "measure_co", "measure_bc" ],
+						"options": {
+							"icons": {
+								"measure_pm25": "./assets/measure_pm25.svg",
+								"measure_pm10": "./assets/measure_pm10.svg",
+								"measure_so2": "./assets/measure_so2.svg",
+								"measure_no2": "./assets/measure_no2.svg",
+								"measure_o3": "./assets/measure_o3.svg",
+								"measure_co": "./assets/measure_co.svg",
+								"measure_bc": "./assets/measure_bc.svg"
+							}
+						}
+					}
+				]
+			},
+			"pair": [
+				{
+					"id": "list_devices",
+					"template": "list_devices",
+					"navigation": {
+						"next": "add_devices"
+				},
+					"options": {
+						"singular": true
+					}
+				},
+				{
+					"id": "add_devices",
+					"template": "add_devices"
+				}
+			],
+			"settings": [
+				{
+					"type": "group",
+					"label": {
+						"en": "Monitor settings",
+						"nl": "Meter instellingen"
+					},
+					"children": [
+						{
+							"id": "lat",
+							"type": "number",
+							"label": {
+								"en": "Latitude",
+								"nl": "Breedtegraad"
+							},
+							"hint": {
+								"en": "The latitude of the monitor.",
+								"nl": "De breedtegraad van de monitor."
+							  },
+							"value": 52.228936
+						},
+						{
+							"id": "lon",
+							"type": "number",
+							"label": {
+								"en": "Longitude",
+								"nl": "Lengtegraad"
+							},
+							"hint": {
+								"en": "The longitude of the monitor.",
+								"nl": "De lengtegraad van de monitor."
+							  },
+							"value": 5.321492
+						},
+						{
+							"id": "dst",
+							"type": "number",
+							"label": {
+								"en": "Max. range (km)",
+								"nl": "Max. afstand (km)"
+							},
+							"hint": {
+								"en": "The maximum distance used to find online data.",
+								"nl": "De maximale afstand om online gegevens te vinden."
+							},
+							"attr": { "min": 1, "max": 100 },
+							"value": 20
+						},
+						{
+							"id": "pollingInterval",
+							"type": "number",
+							"label": {
+								"en": "Scan interval (minutes)",
+								"nl": "Scan interval (minuten)"
+							},
+							"attr": { "min": 5 },
+							"value": 15
+						}
+					]
+				}
+			]
+		}
+	],
+	"flow":	{
+		"triggers": [
+			{
+				"id": "measure_pm10_changed",
+				"title": {
+					"en": "The PM10-level changed",
+					"nl": "Het PM10 niveau is veranderd",
+					"de": "Der PM10-Gehalt hat sich geändert"
+				},
+				"args": [
+					{
+						"name": "monitor",
+						"type": "device",
+						"filter": "driver_id=aq_monitor",
+						"placeholder": {
+							"en": "Which monitor",
+							"nl": "Welke meter"
+						}
+					}
+				],
+				"tokens": [
+					{
+						"name": "measure_pm10",
+						"title": {
+							"en": "CO"
+						},
+						"type": "number",
+						"example": 20
+					}
+				]
+			},
+			{
+				"id": "measure_s02_changed",
+				"title": {
+					"en": "The SO2-level changed",
+					"nl": "Het SO2 niveau is veranderd",
+					"de": "Der SO2-Gehalt hat sich geändert"
+				},
+				"args": [
+					{
+						"name": "monitor",
+						"type": "device",
+						"filter": "driver_id=aq_monitor",
+						"placeholder": {
+							"en": "Which monitor",
+							"nl": "Welke meter"
+						}
+					}
+				],
+				"tokens": [
+					{
+						"name": "measure_so2",
+						"title": {
+							"en": "SO2"
+						},
+						"type": "number",
+						"example": 20
+					}
+				]
+			},
+			{
+				"id": "measure_no2_changed",
+				"title": {
+					"en": "The NO2-level changed",
+					"nl": "Het NO2 niveau is veranderd",
+					"de": "Der NO2-Gehalt hat sich geändert"
+				},
+				"args": [
+					{
+						"name": "monitor",
+						"type": "device",
+						"filter": "driver_id=aq_monitor",
+						"placeholder": {
+							"en": "Which monitor",
+							"nl": "Welke meter"
+						}
+					}
+				],
+				"tokens": [
+					{
+						"name": "measure_no2",
+						"title": {
+							"en": "NO2"
+						},
+						"type": "number",
+						"example": 20
+					}
+				]
+			},
+			{
+				"id": "measure_o3_changed",
+				"title": {
+					"en": "The O3-level changed",
+					"nl": "Het O3 niveau is veranderd",
+					"de": "Der O3-Gehalt hat sich geändert"
+				},
+				"args": [
+					{
+						"name": "monitor",
+						"type": "device",
+						"filter": "driver_id=aq_monitor",
+						"placeholder": {
+							"en": "Which monitor",
+							"nl": "Welke meter"
+						}
+					}
+				],
+				"tokens": [
+					{
+						"name": "measure_o3",
+						"title": {
+							"en": "O3"
+						},
+						"type": "number",
+						"example": 20
+					}
+				]
+			},
+			{
+				"id": "measure_bc_changed",
+				"title": {
+					"en": "The BC-level changed",
+					"nl": "Het BC niveau is veranderd",
+					"de": "Der BC-Gehalt hat sich geändert"
+				},
+				"args": [
+					{
+						"name": "monitor",
+						"type": "device",
+						"filter": "driver_id=aq_monitor",
+						"placeholder": {
+							"en": "Which monitor",
+							"nl": "Welke meter"
+						}
+					}
+				],
+				"tokens": [
+					{
+						"name": "measure_bc",
+						"title": {
+							"en": "BC"
+						},
+						"type": "number",
+						"example": 20
+					}
+				]
+			}
+		]
+	}
+}

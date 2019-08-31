@@ -1,0 +1,19 @@
+{
+	"settings": {
+		"benefit": "Outdoor AirQuality Monitor",
+		"tab1": {
+			"title": "Instructions",
+			"addDeviceTitle": "Add a new device",
+			"addDeviceInstructions": "Add a new monitor via the Homey tab `Devices`. The monitor will gather, from openaq.org, the most recent and available air quality data in the vicinity of your Homey. You can change the location, the maximum distance and the time inteval for data collection in the device settings."
+		},
+		"tab2": {
+			"title": "Debug Logs",
+			"logs": "Logs",
+			"deletelogs": "Delete logs",
+			"updateLogs": "Refresh logs",
+			"deleteWarning": "Delete all logs?",
+			"deleted": "Logs deleted!"
+		}
+	}
+
+}

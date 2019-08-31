@@ -1,0 +1,19 @@
+{
+	"settings": {
+		"benefit": "Buitenlucht Kwaliteit Monitor",
+		"tab1": {
+			"title": "Instructies",
+			"addDeviceTitle": "Toevoegen nieuw apparaat",
+			"addDeviceInstructions": "Voeg een nieuwe monitor toe via de Homey tab `Apparaten`. De monitor zal, van openaq.org, de meest actuele en beschikbare data opvragen in de buurt van je Homey. Je kan de lokatie, de maximale afstand en het tijdsinteval instellen in de apparaat instellingen."
+		},
+		"tab2": {
+			"title": "Debug Logs",
+			"logs": "Logs",
+			"deletelogs": "Verwijder logs",
+			"updateLogs": "Ververs logs",
+			"deleteWarning": "Alle logs verwijderen?",
+			"deleted": "Logs verwijderd!"
+		}
+	}
+
+}
