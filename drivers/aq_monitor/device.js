@@ -30,18 +30,19 @@ function getLatestValue(results, parameter) {
 		return filteredArray.length > 0;
 	});
 	// console.log(util.inspect(hasParameter, { depth: null, colors: true }));
-	// get the most recent value that is most nearby, is not zero or negative, is not older then 48 hrs
-	const twoDaysAgo = (new Date(Date.now() - (48 * 60 * 60 * 1000))).toISOString();
+	// get the most recent value that is most nearby, is not zero or negative, is not older then 8 hrs
+	const timeAgo = (new Date(Date.now() - (8 * 60 * 60 * 1000))).toISOString();
 	const latestValue = hasParameter.reduce((accu, current) => {
 		const currentMeasurement = current.measurements.filter(measurement => measurement.parameter === parameter);
 		// currentMeasurement[0].city = current.city;
 		currentMeasurement[0].location = current.location;
+		currentMeasurement[0].coordinates = current.coordinates;
 		currentMeasurement[0].distance = current.distance;
 		const bmTm = Date.parse(accu.lastUpdated);
 		const cmTm = Date.parse(currentMeasurement[0].lastUpdated);
-		if ((currentMeasurement[0].value <= 0) || (bmTm >= cmTm)) return accu;
+		if (!(currentMeasurement[0].value > 0) || (bmTm >= cmTm)) return accu;
 		return currentMeasurement[0];
-	}, { lastUpdated: twoDaysAgo });
+	}, { lastUpdated: timeAgo });
 	return latestValue;
 }
 
