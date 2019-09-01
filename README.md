@@ -25,7 +25,7 @@ there is a datasource available on your location:
 [![OpenAQ Coverage Map][openaq-image]][openaq.org]
 
 ### Monitor device settings ###
-Homey will poll for new data every 15 minutes within 20 Km range. This can be changed in the
+Homey will poll for new data every 10 minutes within 25 Km range. This can be changed in the
 device settings. If you want more local information you can reduce the search distance, but
 it might lead to receiving less data types or less frequent data updates.
 

@@ -40,8 +40,8 @@ class AQMonitorDriver extends Homey.Driver {
 				settings: {
 					lat: Math.round(Homey.ManagerGeolocation.getLatitude() * 100000000) / 100000000,
 					lon: Math.round(Homey.ManagerGeolocation.getLongitude() * 100000000) / 100000000,
-					dst: 20, //	Radius in kilometres,
-					pollingInterval: 15, // minutes
+					dst: 25, //	Radius in kilometres,
+					pollingInterval: 10, // minutes
 				},
 				capabilities: ['measure_pm25', 'measure_pm10', 'measure_so2', 'measure_no2', 'measure_o3', 'measure_co'],
 			},
@@ -51,8 +51,8 @@ class AQMonitorDriver extends Homey.Driver {
 				settings: {
 					lat: Math.round(Homey.ManagerGeolocation.getLatitude() * 100000000) / 100000000,
 					lon: Math.round(Homey.ManagerGeolocation.getLongitude() * 100000000) / 100000000,
-					dst: 20, //	Radius in kilometres,
-					pollingInterval: 15, // minutes
+					dst: 25, //	Radius in kilometres,
+					pollingInterval: 10, // minutes
 				},
 				capabilities: ['measure_pm25', 'measure_pm10', 'measure_so2', 'measure_no2', 'measure_o3', 'measure_co', 'measure_bc'],
 			},

@@ -24,11 +24,14 @@ const https = require('https');
 // const util = require('util');
 
 function getLatestValue(results, parameter) {
+	// filter for all locations in range that report the parameter
 	const hasParameter = results.filter((result) => {
 		const filteredArray = result.measurements.filter(measurement => measurement.parameter === parameter);
 		return filteredArray.length > 0;
 	});
 	// console.log(util.inspect(hasParameter, { depth: null, colors: true }));
+	// get the most recent value that is most nearby, is not zero or negative, is not older then 48 hrs
+	const twoDaysAgo = (new Date(Date.now() - (48 * 60 * 60 * 1000))).toISOString();
 	const latestValue = hasParameter.reduce((accu, current) => {
 		const currentMeasurement = current.measurements.filter(measurement => measurement.parameter === parameter);
 		// currentMeasurement[0].city = current.city;
@@ -36,9 +39,9 @@ function getLatestValue(results, parameter) {
 		currentMeasurement[0].distance = current.distance;
 		const bmTm = Date.parse(accu.lastUpdated);
 		const cmTm = Date.parse(currentMeasurement[0].lastUpdated);
-		if ((currentMeasurement[0].value < 0) || (bmTm >= cmTm)) return accu;
+		if ((currentMeasurement[0].value <= 0) || (bmTm >= cmTm)) return accu;
 		return currentMeasurement[0];
-	}, { lastUpdated: '2000-01-01T00:00:00.000Z' });
+	}, { lastUpdated: twoDaysAgo });
 	return latestValue;
 }
 

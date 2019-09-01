@@ -11,8 +11,8 @@
 		"nl": "Buitenluchtkwaliteit meter van OpenAQ.org "
 	},
 	"tags": {
-		"en": [ "pm25", "pm10", "so2", "sulfur dioxide", "no2", "nitrogen dioxide", "o3", "ozone", "co", "carbon monoxide", "bc", "black carbon", "air quality", "openAQ" ],
-		"nl": [ "pm25", "pm10", "so2", "zwavel dioxide", "no2", "stikstof dioxide", "o3", "ozon", "co", "koolmonoxide", "bc", "zwarte koolstof", "luchtkwaliteit", "openAQ" ]
+		"en": [ "pm25", "pm10", "so2", "sulfur dioxide", "no2", "nitrogen dioxide", "o3", "ozone", "co", "carbon monoxide", "bc", "black carbon", "air quality", "pollution", "openAQ" ],
+		"nl": [ "pm25", "pm10", "so2", "zwavel dioxide", "no2", "stikstof dioxide", "o3", "ozon", "co", "koolmonoxide", "bc", "zwarte koolstof", "luchtkwaliteit", "vervuiling", "openAQ" ]
 	},
 	"category": [
 		"climate", "internet", "tools"
@@ -43,7 +43,6 @@
 		"url": "https://github.com/gruijter/com.gruijter.openaq/issues"
 	},
 	"homeyCommunityTopicId": 17548,
-
 	"capabilities": {
 		"measure_pm10": {
 			"type": "number",
@@ -246,8 +245,8 @@
 								"en": "The maximum distance used to find online data.",
 								"nl": "De maximale afstand om online gegevens te vinden."
 							},
-							"attr": { "min": 1, "max": 100 },
-							"value": 20
+							"attr": { "min": 1, "max": 150 },
+							"value": 25
 						},
 						{
 							"id": "pollingInterval",
@@ -256,8 +255,8 @@
 								"en": "Scan interval (minutes)",
 								"nl": "Scan interval (minuten)"
 							},
-							"attr": { "min": 5 },
-							"value": 15
+							"attr": { "min": 1 },
+							"value": 10
 						}
 					]
 				}
