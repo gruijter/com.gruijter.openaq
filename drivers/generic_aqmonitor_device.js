@@ -99,6 +99,9 @@ class GenericAQMonitorDevice extends Homey.Device {
 				if (value.distance) {
 					this.setSettings({ station_dst: value.distance.toString() });
 				}
+				if (value.location) {
+					this.setSettings({ station_loc: value.location });
+				}
 			});
 		} catch (error) {
 			this.error(error);

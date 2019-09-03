@@ -268,6 +268,19 @@
 					},
 					"children": [
 						{
+							"id": "station_loc",
+							"type": "label",
+							"label": {
+								"en": "Station location",
+								"nl": "Station locatie"
+							},
+							"hint": {
+								"en": "Location of closest station used to find online data.",
+								"nl": "Locatie van dichtsbijzijnde station om online gegevens te vinden."
+							},
+							"value": ""
+						},
+						{
 							"id": "station_dst",
 							"type": "label",
 							"label": {
@@ -412,6 +425,19 @@
 						"nl": "Dienst informatie"
 					},
 					"children": [
+						{
+							"id": "station_loc",
+							"type": "label",
+							"label": {
+								"en": "Station location",
+								"nl": "Station locatie"
+							},
+							"hint": {
+								"en": "Location of closest station used to find online data.",
+								"nl": "Locatie van dichtsbijzijnde station om online gegevens te vinden."
+							},
+							"value": ""
+						},
 						{
 							"id": "station_dst",
 							"type": "label",

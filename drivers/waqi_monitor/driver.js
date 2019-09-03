@@ -25,7 +25,7 @@ const GenericAQMonitorDriver = require('../generic_aqmonitor_driver.js');
 // service specific properties
 const driverSpecifics = {
 	service: 'WAQI',
-	apiKey: Homey.env.WAQI_API_KEY || 'demo',	// registered to Homey
+	apiKey: Homey.env.WAQI_API_KEY || 'demo',	// registered to homey@gruijter
 	deviceSets: [
 		{
 			name: 'WAQI Monitor',
