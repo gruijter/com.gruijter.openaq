@@ -1,4 +1,3 @@
-/* eslint-disable prefer-destructuring */
 /*
 Copyright 2019, Robin de Gruijter (gruijter@hotmail.com)
 
@@ -21,45 +20,54 @@ along with com.gruijter.openaq.  If not, see <http://www.gnu.org/licenses/>.
 'use strict';
 
 const Homey = require('homey');
+const https = require('https');
 const crypto = require('crypto');
 
-class AQMonitorDriver extends Homey.Driver {
+const randomID = () => `AQMonitor_${crypto.randomBytes(3).toString('hex')}`; // e.g AQMonitor_f9b327
 
-	onInit() {
-		this.log('AQMonitor driver started');
-	}
+class GenericAQMonitorDriver extends Homey.Driver {
 
 	onPairListDevices(data, callback) {
-		this.log('pairing started from frontend');
-		const id1 = `AQMonitor_${crypto.randomBytes(3).toString('hex')}`; // e.g AQMonitor_f9b327
-		const id2 = `AQMonitor_${crypto.randomBytes(3).toString('hex')}`; // e.g AQMonitor_f9b327
-		const devices = [
-			{
-				name: 'AQMonitor',
-				data: { id1 },
+		this.log('pairing started by user');
+		const devices = [];
+		this.ds.deviceSets.forEach((deviceSet) => {
+			const device = {
+				name: deviceSet.name,
+				data: { id: randomID() },
 				settings: {
+					service: this.ds.service,
+					apiKey: this.ds.apiKey,
 					lat: Math.round(Homey.ManagerGeolocation.getLatitude() * 100000000) / 100000000,
 					lon: Math.round(Homey.ManagerGeolocation.getLongitude() * 100000000) / 100000000,
-					dst: 25, //	Radius in kilometres,
+					dst: 100, //	Radius in kilometres,
+					station_dst: 'unknown',	// distance to closest station (m)
 					pollingInterval: 10, // minutes
 				},
-				capabilities: ['measure_pm25', 'measure_pm10', 'measure_so2', 'measure_no2', 'measure_o3', 'measure_co'],
-			},
-			{
-				name: 'AQMonitor_with_BC',
-				data: { id2 },
-				settings: {
-					lat: Math.round(Homey.ManagerGeolocation.getLatitude() * 100000000) / 100000000,
-					lon: Math.round(Homey.ManagerGeolocation.getLongitude() * 100000000) / 100000000,
-					dst: 25, //	Radius in kilometres,
-					pollingInterval: 10, // minutes
-				},
-				capabilities: ['measure_pm25', 'measure_pm10', 'measure_so2', 'measure_no2', 'measure_o3', 'measure_co', 'measure_bc'],
-			},
-		];
+				capabilities: deviceSet.capabilities,
+			};
+			devices.push(device);
+		});
 		callback(null, devices);
+	}
+
+	_makeHttpsRequest(options) {
+		return new Promise((resolve, reject) => {
+			const req = https.request(options, (res) => {
+				let resBody = '';
+				res.on('data', (chunk) => {
+					resBody += chunk;
+				});
+				res.once('end', () => {
+					res.body = resBody;
+					return resolve(res); // resolve the request
+				});
+			});
+			req.setTimeout(this.timeout || 30000, () => req.abort());
+			req.once('error', e => reject(e));
+			req.end();
+		});
 	}
 
 }
 
-module.exports = AQMonitorDriver;
+module.exports = GenericAQMonitorDriver;

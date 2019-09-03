@@ -4,7 +4,7 @@
 		"tab1": {
 			"title": "Instructions",
 			"addDeviceTitle": "Add a new device",
-			"addDeviceInstructions": "Add a new monitor via the Homey tab `Devices`. The monitor will gather, from openaq.org, the most recent and available air quality data in the vicinity of your Homey. You can change the location, the maximum distance and the time inteval for data collection in the device settings."
+			"addDeviceInstructions": "Add a new monitor via the Homey tab `Devices`. By default the virtual monitor will be 'installed' at the location of your Homey. But you can manually add multiple monitors and enter any location in the world (lat/lon). The app will search for a source of data in the vicinity of the set monitor location. Availability of data depends on the service (= device type) you select. You can change the location, and other settings, in the device settings."
 		},
 		"tab2": {
 			"title": "Debug Logs",

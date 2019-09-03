@@ -23,7 +23,6 @@ along with com.gruijter.openaq.  If not, see <http://www.gnu.org/licenses/>.
 const Homey = require('homey');
 const StdOutFixture = require('fixture-stdout');
 const fs = require('fs');
-// const util = require('util');
 
 class captureLogs {
 	// Log object to keep logs in memory and in persistent storage
@@ -37,7 +36,6 @@ class captureLogs {
 		this.getLogs();
 		this.captureStdOut();
 		this.captureStdErr();
-		// Homey.app.log('capture is ready :)');
 	}
 
 	getLogs() {

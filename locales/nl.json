@@ -4,7 +4,7 @@
 		"tab1": {
 			"title": "Instructies",
 			"addDeviceTitle": "Toevoegen nieuw apparaat",
-			"addDeviceInstructions": "Voeg een nieuwe monitor toe via de Homey tab `Apparaten`. De monitor zal, van openaq.org, de meest actuele en beschikbare data opvragen in de buurt van je Homey. Je kan de lokatie, de maximale afstand en het tijdsinteval instellen in de apparaat instellingen."
+			"addDeviceInstructions": "Voeg een nieuwe monitor toe via de Homey tab `Apparaten`. De virtuele meter wordt 'geinstalleerd' op de locatie van je Homey. Maar je kan meerdere meters toevoegen en handmatig iedere locatie ter wereld toekennen (lat/lon). De app zal een data bron zoeken in de buurt van de ingestelde locatie. Beschikbaarheid van data is afhankelijk van de door jou gekozen dienst (= apparaat type). Je kan de locatie en andere instellingen wijzigen in de apparaat instellingen."
 		},
 		"tab2": {
 			"title": "Debug Logs",
