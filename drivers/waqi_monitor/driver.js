@@ -25,7 +25,7 @@ const GenericAQMonitorDriver = require('../generic_aqmonitor_driver.js');
 // service specific properties
 const driverSpecifics = {
 	service: 'WAQI',
-	apiKey: Homey.env.WAQI_API_KEY || 'demo',	// registered to homey@gruijter
+	apiKey: '',
 	deviceSets: [
 		{
 			name: 'WAQI Monitor',
@@ -63,9 +63,10 @@ class AQICNMonitorDriver extends GenericAQMonitorDriver {
 		this.getRawData = async (device) => {
 			try {
 				const { settings } = device;
+				const token = settings.api_key.length ? settings.api_key : Homey.env.WAQI_API_KEY;	// registered to homey@gruijter
 				const options = {
 					hostname: 'api.waqi.info',
-					path: `/feed/geo:${settings.lat};${settings.lon}/?token=${settings.apiKey}`,
+					path: `/feed/geo:${settings.lat};${settings.lon}/?token=${token}`,
 					headers: {
 						'Content-Length': 0,
 					},

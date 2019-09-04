@@ -375,8 +375,8 @@
 								"nl": "API Sleutel"
 							},
 							"hint": {
-								"en": "Get a free API key from AQICN.org.",
-								"nl": "Haal een gratis API sleutel bij AQICN.org"
+								"en": "Get a free API key from AQICN.org. Leave empty to use built-in Homey key.",
+								"nl": "Haal een gratis API sleutel bij AQICN.org. Leeg laten om de ingebouwde Homey sleutel te gebruiken."
 							  },
 							"value": "demo"
 						},

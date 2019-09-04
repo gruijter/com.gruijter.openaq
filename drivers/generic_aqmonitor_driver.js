@@ -36,7 +36,7 @@ class GenericAQMonitorDriver extends Homey.Driver {
 				data: { id: randomID() },
 				settings: {
 					service: this.ds.service,
-					apiKey: this.ds.apiKey,
+					api_key: this.ds.apiKey,
 					lat: Math.round(Homey.ManagerGeolocation.getLatitude() * 100000000) / 100000000,
 					lon: Math.round(Homey.ManagerGeolocation.getLongitude() * 100000000) / 100000000,
 					dst: 100, //	Radius in kilometres,
