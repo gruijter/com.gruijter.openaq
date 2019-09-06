@@ -74,4 +74,9 @@ https://aqicn.org/api/
 https://aqicn.org/json-api/doc/
 waqi.info
 http://aqicn.org/sources/
+
+Luftdaten:
+luftdaten.info
+https://maps.luftdaten.info/#2/0/0
+https://github.com/opendata-stuttgart/meta/wiki/APIs
 */

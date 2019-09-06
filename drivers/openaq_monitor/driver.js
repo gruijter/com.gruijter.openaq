@@ -19,21 +19,12 @@ along with com.gruijter.openaq.  If not, see <http://www.gnu.org/licenses/>.
 
 'use strict';
 
+// const util = require('util');
 const GenericAQMonitorDriver = require('../generic_aqmonitor_driver.js');
 
 const driverSpecifics = {
 	service: 'OpenAQ',
 	apiKey: 'N/A',
-	deviceSets: [
-		{
-			name: 'OpenAQ Monitor',
-			capabilities: ['measure_pm25', 'measure_pm10', 'measure_so2', 'measure_no2', 'measure_o3', 'measure_co'],
-		},
-		{
-			name: 'AQMonitor_with_BC',
-			capabilities: ['measure_pm25', 'measure_pm10', 'measure_so2', 'measure_no2', 'measure_o3', 'measure_co', 'measure_bc'],
-		},
-	],
 };
 
 class OpenAQMonitorDriver extends GenericAQMonitorDriver {
@@ -56,11 +47,11 @@ class OpenAQMonitorDriver extends GenericAQMonitorDriver {
 					method: 'GET',
 				};
 				const result = await this._makeHttpsRequest(options);
-				const jsonData = JSON.parse(result.body);
-				// console.log(util.inspect(jsonData, { depth: null, colors: true }));
 				if (result.statusCode !== 200 || !result.headers['content-type'].includes('application/json')) {
 					throw Error('Wrong content type, expected application/json');
 				}
+				const jsonData = JSON.parse(result.body);
+				// console.log(util.inspect(jsonData, { depth: null, colors: true }));
 				if (jsonData.results === undefined) {
 					throw Error('Invalid response from API');
 				}
@@ -94,6 +85,43 @@ class OpenAQMonitorDriver extends GenericAQMonitorDriver {
 				return currentMeasurement[0];
 			}, { lastUpdated: timeAgo });
 			return latestValue;
+		};
+		this.discover = async (settings) => {
+			try {
+				const deviceSets = [
+					{
+						name: 'OAQ Monitor @Homey',
+						capabilities: ['measure_pm25', 'measure_pm10', 'measure_so2', 'measure_no2', 'measure_o3', 'measure_co'],
+					},
+					{
+						name: 'OAQ monitor @Homey_with_BC',
+						capabilities: ['measure_pm25', 'measure_pm10', 'measure_so2', 'measure_no2', 'measure_o3', 'measure_co', 'measure_bc'],
+					},
+				];
+				const results = await this.getRawData({ settings });
+				const timeAgo = new Date(Date.now() - (8 * 60 * 60 * 1000));	// 8 hours
+				const withData = results.filter((station) => {
+					const hasData = station.measurements.filter(measurement => (measurement.value > 0)
+						&& (Date.parse(measurement.lastUpdated) > timeAgo));
+					return hasData.length > 0;
+				});
+				// add the 5 nearest stations
+				withData.forEach((station, index) => {
+					if (index > 4) return;
+					const set = {
+						name: `OAQ Monitor ${station.city}@${Math.round(station.distance)}m`,
+						lat: Number(station.coordinates.latitude),
+						lon: Number(station.coordinates.longitude),
+						dst: 0.01,
+						stationDst: `${Math.round(station.distance)}`,
+						capabilities: ['measure_pm25', 'measure_pm10', 'measure_so2', 'measure_no2', 'measure_o3', 'measure_co'],
+					};
+					deviceSets.push(set);
+				});
+				return deviceSets;
+			} catch (error) {
+				return Promise.reject(error);
+			}
 		};
 
 	}

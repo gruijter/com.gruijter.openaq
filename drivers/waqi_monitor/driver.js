@@ -26,35 +26,11 @@ const GenericAQMonitorDriver = require('../generic_aqmonitor_driver.js');
 const driverSpecifics = {
 	service: 'WAQI',
 	apiKey: '',
-	deviceSets: [
-		{
-			name: 'WAQI Monitor',
-			capabilities: ['measure_pm25', 'measure_pm10', 'measure_so2', 'measure_no2', 'measure_o3', 'measure_co'],
-		},
-	],
 };
 
-const distance = (lat1, lon1, lat2, lon2) => {
-	if ((lat1 === lat2) && (lon1 === lon2)) {
-		return 0;
-	}
-	const radlat1 = Math.PI * lat1 / 180;
-	const radlat2 = Math.PI * lat2 / 180;
-	const theta = lon1 - lon2;
-	const radtheta = Math.PI * theta / 180;
-	let dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
-	if (dist > 1) {
-		dist = 1;
-	}
-	dist = Math.acos(dist);
-	dist = dist * 180 / Math.PI;
-	dist = dist * 60 * 1.1515 * 1.609344 * 1000; // in meters
-	return Math.round(dist);
-};
-
-class AQICNMonitorDriver extends GenericAQMonitorDriver {
+class WAQIMonitorDriver extends GenericAQMonitorDriver {
 	onInit() {
-		this.log('AQICN Monitor Driver started');
+		this.log('WAQI Monitor Driver started');
 
 		// add service specific properties and functions
 		this.ds = driverSpecifics;
@@ -73,11 +49,11 @@ class AQICNMonitorDriver extends GenericAQMonitorDriver {
 					method: 'GET',
 				};
 				const result = await this._makeHttpsRequest(options);
-				const jsonData = JSON.parse(result.body);
-				// console.log(util.inspect(jsonData, { depth: null, colors: true }));
 				if (result.statusCode !== 200 || !result.headers['content-type'].includes('application/json')) {
 					throw Error('Wrong content type, expected application/json');
 				}
+				const jsonData = JSON.parse(result.body);
+				// console.log(util.inspect(jsonData, { depth: null, colors: true }));
 				if (jsonData.status !== 'ok') {
 					throw Error(`Invalid response from API: ${JSON.stringify(jsonData)}`);
 				}
@@ -107,14 +83,68 @@ class AQICNMonitorDriver extends GenericAQMonitorDriver {
 				location: results.city.name,
 				coordinates: { latitude: results.city.geo[0], longitude: results.city.geo[1] },
 				url: results.city.url,
-				distance: distance(settings.lat, settings.lon, results.city.geo[0], results.city.geo[1]),
+				distance: this.distance(settings.lat, settings.lon, results.city.geo[0], results.city.geo[1]),
 			};
 			return value;
+		};
+
+		this.discover = async (settings) => {
+			try {
+				const deviceSets = [
+					{
+						name: 'WAQI Monitor @Homey',
+						capabilities: ['measure_pm25', 'measure_pm10', 'measure_so2', 'measure_no2', 'measure_o3', 'measure_co'],
+					},
+				];
+				const bounds = this.getBounds(settings.lat, settings.lon, settings.dst);
+				const token = Homey.env.WAQI_API_KEY;	// registered to homey@gruijter
+				const options = {
+					hostname: 'api.waqi.info',
+					path: `/map/bounds/?latlng=${bounds.lamin},${bounds.lomin},${bounds.lamax},${bounds.lomax}&token=${token}`,
+					headers: {
+						'Content-Length': 0,
+					},
+					method: 'GET',
+				};
+				const result = await this._makeHttpsRequest(options);
+				if (result.statusCode !== 200 || !result.headers['content-type'].includes('application/json')) {
+					throw Error('Wrong content type, expected application/json');
+				}
+				const jsonData = JSON.parse(result.body);
+				// console.log(util.inspect(jsonData, { depth: null, colors: true }));
+				if (jsonData.status !== 'ok') {
+					throw Error(`Invalid response from API: ${JSON.stringify(jsonData)}`);
+				}
+				const results = jsonData.data;
+				// sort on distance
+				results.sort((a, b) => {
+					const d = this.distance(settings.lat, settings.lon, a.lat, a.lon)
+						- this.distance(settings.lat, settings.lon, b.lat, b.lon);
+					return d;
+				});
+				// add the 5 nearest stations
+				results.forEach((station, index) => {
+					if (index > 4) return;
+					const dist = this.distance(settings.lat, settings.lon, station.lat, station.lon);
+					const set = {
+						name: `WAQI Monitor ${station.uid}@${dist}m`,
+						lat: Number(station.lat),
+						lon: Number(station.lon),
+						dst: 0.01,
+						stationDst: `${dist}`,
+						capabilities: ['measure_pm25', 'measure_pm10', 'measure_so2', 'measure_no2', 'measure_o3', 'measure_co'],
+					};
+					deviceSets.push(set);
+				});
+				return deviceSets;
+			} catch (error) {
+				return Promise.reject(error);
+			}
 		};
 	}
 }
 
-module.exports = AQICNMonitorDriver;
+module.exports = WAQIMonitorDriver;
 
 /*
 { status: 'ok',

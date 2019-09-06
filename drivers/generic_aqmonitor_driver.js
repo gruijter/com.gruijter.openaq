@@ -1,3 +1,5 @@
+/* eslint-disable import/no-extraneous-dependencies */
+/* eslint-disable class-methods-use-this */
 /*
 Copyright 2019, Robin de Gruijter (gruijter@hotmail.com)
 
@@ -22,32 +24,61 @@ along with com.gruijter.openaq.  If not, see <http://www.gnu.org/licenses/>.
 const Homey = require('homey');
 const https = require('https');
 const crypto = require('crypto');
+const GeoPoint = require('geopoint');
 
 const randomID = () => `AQMonitor_${crypto.randomBytes(3).toString('hex')}`; // e.g AQMonitor_f9b327
 
 class GenericAQMonitorDriver extends Homey.Driver {
 
-	onPairListDevices(data, callback) {
+	async onPairListDevices(data, callback) {
 		this.log('pairing started by user');
-		const devices = [];
-		this.ds.deviceSets.forEach((deviceSet) => {
-			const device = {
-				name: deviceSet.name,
-				data: { id: randomID() },
-				settings: {
-					service: this.ds.service,
-					api_key: this.ds.apiKey,
-					lat: Math.round(Homey.ManagerGeolocation.getLatitude() * 100000000) / 100000000,
-					lon: Math.round(Homey.ManagerGeolocation.getLongitude() * 100000000) / 100000000,
-					dst: 100, //	Radius in kilometres,
-					station_dst: 'unknown',	// distance to closest station (m)
-					pollingInterval: 10, // minutes
-				},
-				capabilities: deviceSet.capabilities,
+		try {
+			const devices = [];
+			const options = {
+				lat: Math.round(Homey.ManagerGeolocation.getLatitude() * 100000000) / 100000000,
+				lon: Math.round(Homey.ManagerGeolocation.getLongitude() * 100000000) / 100000000,
+				dst: 250, //	Radius in kilometres,
 			};
-			devices.push(device);
-		});
-		callback(null, devices);
+			const deviceSets = await this.discover(options);
+			deviceSets.forEach((set) => {
+				const device = {
+					name: set.name,
+					data: { id: randomID() },
+					settings: {
+						service: this.ds.service,
+						api_key: this.ds.apiKey,
+						lat: set.lat || Math.round(Homey.ManagerGeolocation.getLatitude() * 100000000) / 100000000,
+						lon: set.lon || Math.round(Homey.ManagerGeolocation.getLongitude() * 100000000) / 100000000,
+						dst: set.dst || 100, //	Radius in kilometres,
+						include_indoor: set.includeIndoor || false,
+						pollingInterval: set.pollingInterval || 10, // minutes
+						station_dst: set.stationDst || 'unknown',	// distance to station (m)
+					},
+					capabilities: set.capabilities,
+				};
+				devices.push(device);
+			});
+			callback(null, devices);
+		} catch (error) {
+			this.error(error);
+		}
+	}
+
+	distance(lat1, lon1, lat2, lon2) {
+		const from = new GeoPoint(Number(lat1), Number(lon1));
+		const to = new GeoPoint(Number(lat2), Number(lon2));
+		return Math.round(from.distanceTo(to, true) * 1000);
+	}
+
+	getBounds(lat1, lon1, range) {
+		const center = new GeoPoint(lat1, lon1);
+		const bounds = center.boundingCoordinates(range, undefined, true);
+		return {
+			lamin: bounds[0]._degLat,
+			lomin: bounds[0]._degLon,
+			lamax: bounds[1]._degLat,
+			lomax: bounds[1]._degLon,
+		};
 	}
 
 	_makeHttpsRequest(options) {

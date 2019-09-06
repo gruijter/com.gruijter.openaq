@@ -21,7 +21,7 @@ along with com.gruijter.openaq.  If not, see <http://www.gnu.org/licenses/>.
 
 const GenericAQMonitorDevice = require('../generic_aqmonitor_device.js');
 
-class WAQIMonitorDevice extends GenericAQMonitorDevice {
+class LDMonitorDevice extends GenericAQMonitorDevice {
 
 	onInit() {
 		// start the generic device
@@ -30,4 +30,4 @@ class WAQIMonitorDevice extends GenericAQMonitorDevice {
 
 }
 
-module.exports = WAQIMonitorDevice;
+module.exports = LDMonitorDevice;

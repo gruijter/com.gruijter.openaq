@@ -19,29 +19,39 @@ select, the following parameters are provided:
 ### Air Quality Monitor Device setup ###
 When adding a device, you can choose which service provider to use. Deciding on which service
 to use depends on your personal preferences, and mostly if the the service has monitoring
-stations nearby. 
-By default the virtual monitor will be 'installed' at the location of your Homey. But you can
-manually add multiple monitors and enter any location in the world (lat/lon). The app will
-search for a source of data in the vicinity of the set monitor location. Check the coverage
-for your own location below.
+stations nearby. Check the different coverages for your own location in the maps below.
+
+![image][add-device]
+
+By default the virtual monitor will be 'installed' at the location of your Homey. If you choose
+the @Homey station, Homey will always search the nearest source of data. If you select any of the
+other discovered stations, Homey will always use that particular station as data source.
+If you want to add a station anywhere else in the world, just add a local station first, and
+change the lat/lon in the device settings.
+
+![image][discovered]
+
 
 ### OpenAQ Monitor ###
 This free service provides government and research grade sources in over 60 countries. This
-service provides the easiest setup. Homey will poll for new data every 10 minutes within
-100 Km range. This can be changed in the device settings. If you want more local information
-you can reduce the search distance, but it might lead to receiving less data types or less
-frequent data updates.
+service provides the easiest setup. Data is usually updated every hour.
 
 [![OpenAQ Coverage Map][openaq-image]][openaq-map]
 
 ### WAQI Monitor ###
 This service provides government and research grade sources in over 90 countries. It has better
-coverage then OpenAQ, but it will only provide data from the nearest station. If this station
-does not provide all parameters, you can manually enter the lat/lon of another station in the
-device settings. Also, you need to enter an API key it in the device settings. You can get a
-free API key [here].
+coverage then OpenAQ, but it needs an API key. You can get a free API key [here].
 
 [![WAQI Coverage Map][waqi-image]][waqi-map]
+
+### Luftdaten Monitor ###
+Luftdaten is dedicated to fine dust measurement with the Citizen Science project luftdaten.info.
+Thousands of citizens around the world installed self-built sensors on the outside their home.
+The data is limited to only show PM2.5 and PM10, but has a very high update rate up to once
+every minute.
+
+[![LD Coverage Map][ld-image]][ld-map]
+
 
 ### Manually changing device settings ###
 After adding a new monitor device, you can change the device settings.
@@ -66,6 +76,7 @@ If you really like the app you can buy me a beer.
 
 This app uses:
 * OpenAQ API for data retrieval. See license information here: https://docs.openaq.org/
+* Luftdaten API for data retrieval: https://luftdaten.info/en/home-en/
 * World Air Quality Index (WAQI) API for data retrieval: http://waqi.info/
 * Data provided by the world's Environmental Protection Agencies: http://aqicn.org/sources/
 
@@ -85,6 +96,11 @@ Version changelog: [changelog.txt]
 [waqi-image]: https://aws1.discourse-cdn.com/business4/uploads/athom/original/2X/6/604388f07d54be99d4658ab5a9ebb988fc499d27.jpeg
 [here]: http://aqicn.org/data-platform/token/#/
 
+[ld-map]: https://maps.luftdaten.info/#2/0/0
+[ld-image]: https://aws1.discourse-cdn.com/business4/uploads/athom/original/2X/9/9417995ddd2875423bac02fbc35deff413005af4.jpeg
+
+[add-device]: https://aws1.discourse-cdn.com/business4/uploads/athom/original/2X/e/e92f7d5a1043622325236307dce3e2ee5ce139e0.png
+[discovered]: https://aws1.discourse-cdn.com/business4/uploads/athom/original/2X/f/f8ed8249d710fac26ef155ad7b5ddb7923991345.jpeg
 [mobile-device-image]: https://aws1.discourse-cdn.com/business4/uploads/athom/original/2X/0/0c3c8fa891ac398ce395c85f6cbdd5eba1d19896.jpeg
 
 [device-settings-image]: https://aws1.discourse-cdn.com/business4/uploads/athom/original/2X/8/8db52a776ae464a0680aa4a4fce46fc3adcba222.jpeg

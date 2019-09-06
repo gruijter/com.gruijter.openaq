@@ -1,6 +1,6 @@
 {
 	"id": "com.gruijter.openaq",
-	"version": "1.1.0",
+	"version": "1.2.0",
 	"compatibility": ">=1.5.0",
 	"sdk": 2,
 	"name": {
@@ -245,7 +245,7 @@
 								"en": "The maximum distance used to find online data.",
 								"nl": "De maximale afstand om online gegevens te vinden."
 							},
-							"attr": { "min": 1, "max": 250 },
+							"attr": { "min": 0, "max": 250 },
 							"value": 100
 						},
 						{
@@ -454,6 +454,168 @@
 					]
 				}
 			]
+		},
+		{
+			"id": "ld_monitor",
+			"name": {
+				"en": "Luftdaten Monitor",
+				"nl": "Luftdaten Meter"
+			},
+			"images": {
+			 "large": "drivers/ld_monitor/assets/images/large.jpg",
+			 "small": "drivers/ld_monitor/assets/images/small.jpg"
+		 	},
+			"class": "sensor",
+			"capabilities": [ "measure_pm25", "measure_pm10" ],
+			"capabilitiesOptions": {
+				"measure_pm25": {
+					"units": {
+						"en": "µg/m³"
+					}
+				}
+			},
+			"mobile": {
+				"components": [
+					{
+						"id": "icon"
+					},
+					{
+						"id": "sensor",
+						"capabilities": [ "measure_pm25", "measure_pm10" ],
+						"options": {
+							"icons": {
+								"measure_pm25": "./assets/measure_pm25.svg",
+								"measure_pm10": "./assets/measure_pm10.svg"
+							}
+						}
+					}
+				]
+			},
+			"pair": [
+				{
+					"id": "list_devices",
+					"template": "list_devices",
+					"navigation": {
+						"next": "add_devices"
+				},
+					"options": {
+						"singular": true
+					}
+				},
+				{
+					"id": "add_devices",
+					"template": "add_devices"
+				}
+			],
+			"settings": [
+				{
+					"type": "group",
+					"label": {
+						"en": "Monitor settings",
+						"nl": "Meter instellingen"
+					},
+					"children": [
+						{
+							"id": "lat",
+							"type": "number",
+							"label": {
+								"en": "Latitude",
+								"nl": "Breedtegraad"
+							},
+							"hint": {
+								"en": "The latitude of the monitor.",
+								"nl": "De breedtegraad van de monitor."
+							  },
+							"value": 52.228936
+						},
+						{
+							"id": "lon",
+							"type": "number",
+							"label": {
+								"en": "Longitude",
+								"nl": "Lengtegraad"
+							},
+							"hint": {
+								"en": "The longitude of the monitor.",
+								"nl": "De lengtegraad van de monitor."
+							  },
+							"value": 5.321492
+						},
+						{
+							"id": "dst",
+							"type": "number",
+							"label": {
+								"en": "Max. range (km)",
+								"nl": "Max. afstand (km)"
+							},
+							"hint": {
+								"en": "The maximum distance used to find online data.",
+								"nl": "De maximale afstand om online gegevens te vinden."
+							},
+							"attr": { "min": 0, "max": 250 },
+							"value": 100
+						},
+						{
+							"id": "include_indoor",
+							"type": "checkbox",
+							"label": {
+								"en": "Include indoor stations",
+								"nl": "Inclusief binnenstations"
+							},
+							"hint": {
+								"en": "Include indoor stations to find online data.",
+								"nl": "Betrek binnenstations om online gegevens te vinden."
+							},
+							"value": false
+						},
+						{
+							"id": "pollingInterval",
+							"type": "number",
+							"label": {
+								"en": "Scan interval (minutes)",
+								"nl": "Scan interval (minuten)"
+							},
+							"attr": { "min": 1 },
+							"value": 10
+						}
+					]
+				},
+				{
+					"type": "group",
+					"label": {
+						"en": "Service information",
+						"nl": "Dienst informatie"
+					},
+					"children": [
+						{
+							"id": "station_loc",
+							"type": "label",
+							"label": {
+								"en": "Station location",
+								"nl": "Station locatie"
+							},
+							"hint": {
+								"en": "Location of closest station used to find online data.",
+								"nl": "Locatie van dichtsbijzijnde station om online gegevens te vinden."
+							},
+							"value": ""
+						},
+						{
+							"id": "station_dst",
+							"type": "label",
+							"label": {
+								"en": "Station distance (m)",
+								"nl": "Afstand tot station (m)"
+							},
+							"hint": {
+								"en": "Distance to closest station used to find online data.",
+								"nl": "Afstand tot dichtsbijzijnde station om online gegevens te vinden."
+							},
+							"value": ""
+						}
+					]
+				}
+			]
 		}
 	],
 	"flow":	{
@@ -469,7 +631,7 @@
 					{
 						"name": "monitor",
 						"type": "device",
-						"filter": "driver_id=openaq_monitor||waqi_monitor",
+						"filter": "driver_id=openaq_monitor|waqi_monitor|ld_monitor",
 						"placeholder": {
 							"en": "Which monitor",
 							"nl": "Welke meter"
@@ -498,7 +660,7 @@
 					{
 						"name": "monitor",
 						"type": "device",
-						"filter": "driver_id=openaq_monitor||waqi_monitor",
+						"filter": "driver_id=openaq_monitor|waqi_monitor",
 						"placeholder": {
 							"en": "Which monitor",
 							"nl": "Welke meter"
@@ -527,7 +689,7 @@
 					{
 						"name": "monitor",
 						"type": "device",
-						"filter": "driver_id=openaq_monitor||waqi_monitor",
+						"filter": "driver_id=openaq_monitor|waqi_monitor",
 						"placeholder": {
 							"en": "Which monitor",
 							"nl": "Welke meter"
@@ -556,7 +718,7 @@
 					{
 						"name": "monitor",
 						"type": "device",
-						"filter": "driver_id=openaq_monitor||waqi_monitor",
+						"filter": "driver_id=openaq_monitor|waqi_monitor",
 						"placeholder": {
 							"en": "Which monitor",
 							"nl": "Welke meter"
