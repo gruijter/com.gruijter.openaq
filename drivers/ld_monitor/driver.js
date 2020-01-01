@@ -1,5 +1,5 @@
 /*
-Copyright 2019, Robin de Gruijter (gruijter@hotmail.com)
+Copyright 2019 - 2020, Robin de Gruijter (gruijter@hotmail.com)
 
 This file is part of com.gruijter.openaq.
 
@@ -40,8 +40,8 @@ class LDMonitorDriver extends GenericAQMonitorDriver {
 			try {
 				const { settings } = device;
 				const options = {
-					hostname: 'api.luftdaten.info',
-					path: `/v1/filter/area=${settings.lat},${settings.lon},${settings.dst}`,
+					hostname: 'data.sensor.community', // old: 'api.luftdaten.info'
+					path: `/airrohr/v1/filter/area=${settings.lat},${settings.lon},${settings.dst}`,
 					headers: {
 						'Content-Length': 0,
 					},
@@ -68,12 +68,12 @@ class LDMonitorDriver extends GenericAQMonitorDriver {
 			if (!searchParam) return {};
 			const timeAgo = (new Date(Date.now() - (8 * 60 * 60 * 1000)));
 			const filtered = results
-				.filter(station => new Date(station.timestamp) > timeAgo)	// not older then 8 hrs
+				.filter((station) => new Date(station.timestamp) > timeAgo)	// not older then 8 hrs
 				.filter((station) => {	// has the requested parameter
-					const found = station.sensordatavalues.filter(dataPoint => dataPoint.value_type === searchParam);
+					const found = station.sensordatavalues.filter((dataPoint) => dataPoint.value_type === searchParam);
 					return found.length > 0;
 				})
-				.filter(station => settings.include_indoor || !station.location.indoor);	// include indoor stations or not
+				.filter((station) => settings.include_indoor || !station.location.indoor);	// include indoor stations or not
 			// console.log(util.inspect(filtered, { depth: null, colors: true }));
 			const latest = filtered[0];
 			const nearest = filtered.reduce((accu, current) => {
@@ -84,11 +84,11 @@ class LDMonitorDriver extends GenericAQMonitorDriver {
 			if (!nearest) return {};
 			const value = {
 				parameter,
-				value: Number(nearest.sensordatavalues.filter(dataPoint => dataPoint.value_type === searchParam)[0].value),
+				value: Number(nearest.sensordatavalues.filter((dataPoint) => dataPoint.value_type === searchParam)[0].value),
 				lastUpdated: new Date(nearest.timestamp),
 				location: `ID:${nearest.sensor.id} (${nearest.location.latitude},${nearest.location.longitude})`,
 				coordinates: { latitude: nearest.location.latitude, longitude: nearest.location.longitude },
-				url: `https://maps.luftdaten.info/#14/${nearest.location.latitude}/${nearest.location.longitude}`,
+				url: `https://maps.sensor.communityo/#14/${nearest.location.latitude}/${nearest.location.longitude}`,
 				distance: this.distance(settings.lat, settings.lon, nearest.location.latitude, nearest.location.longitude),
 			};
 			return value;
@@ -112,18 +112,16 @@ class LDMonitorDriver extends GenericAQMonitorDriver {
 				const results = await this.getRawData({ settings });
 				const filtered = results
 					.filter((station) => {	// has the requested parameter
-						const found = station.sensordatavalues.filter(dataPoint => (dataPoint.value_type === 'P1')
+						const found = station.sensordatavalues.filter((dataPoint) => (dataPoint.value_type === 'P1')
 							|| (dataPoint.value_type === 'P2'));
 						return found.length > 0;
 					})
-					.filter(station => !station.location.indoor); // only outdoor sensors
-
+					.filter((station) => !station.location.indoor); // only outdoor sensors
 				const uniqueFiltered = filtered.reduce((unique, station) => { // remove doubles
-					const sameID = unique.filter(uStation => uStation.sensor.id === station.sensor.id);
+					const sameID = unique.filter((uStation) => uStation.sensor.id === station.sensor.id);
 					const found = sameID.length > 0;
 					return found ? unique : [...unique, station];
 				}, []);
-
 				const sorted = uniqueFiltered.sort((a, b) => {	// sort by distance
 					const distA = this.distance(settings.lat, settings.lon, a.location.latitude, a.location.longitude);
 					const distB = this.distance(settings.lat, settings.lon, b.location.latitude, b.location.longitude);
@@ -145,7 +143,8 @@ class LDMonitorDriver extends GenericAQMonitorDriver {
 					};
 					deviceSets.push(set);
 				});
-				return deviceSets;
+				// console.log(util.inspect(deviceSets, true, null, true));
+				return Promise.all(deviceSets);
 			} catch (error) {
 				return Promise.reject(error);
 			}
@@ -155,7 +154,118 @@ class LDMonitorDriver extends GenericAQMonitorDriver {
 
 module.exports = LDMonitorDriver;
 
+
 /*
+website: https://sensor.community/
+LD station database: https://public.opendatasoft.com/explore/dataset/api-luftdateninfo/
+
+api info: https://luftdaten.info/faq/#toggle-id-8
+
+Wir stellen die Daten der Sensoren als JSON-Dateien bereit, die jede Minute aktualisiert werden.
+Alle Sensorenwerte der letzten 5 Minuten -> http://api.luftdaten.info/static/v1/data.json
+Werte der letzten 5 Minuten eines bestimmten Sensors -> http://api.luftdaten.info/v1/sensor/sensorid/
+
+[ { id: 5935220196,
+    location:
+     { country: 'BE',
+       id: 15177,
+       indoor: 0,
+       longitude: '4.412',
+       altitude: '72.8',
+       exact_location: 0,
+       latitude: '50.844' },
+    sensordatavalues:
+     [ { id: 12607161900, value: '29.57', value_type: 'P1' },
+       { value: '16.87', id: 12607161901, value_type: 'P2' },
+       [length]: 2 ],
+    sensor:
+     { id: 27796,
+       pin: '1',
+       sensor_type: { manufacturer: 'Nova Fitness', name: 'SDS011', id: 14 } },
+    sampling_rate: null,
+    timestamp: '2020-01-01 10:57:01' },
+  { location:
+     { latitude: '51.842',
+       exact_location: 0,
+       id: 11774,
+       country: 'NL',
+       altitude: '30.9',
+       indoor: 0,
+       longitude: '5.858' },
+    id: 5935220194,
+    sensordatavalues:
+     [ { value_type: 'temperature', id: 12607161896, value: '2.40' },
+       { value_type: 'humidity', id: 12607161897, value: '99.90' },
+       [length]: 2 ],
+    sensor:
+     { id: 23210,
+       pin: '7',
+       sensor_type: { name: 'DHT22', id: 9, manufacturer: 'various' } },
+    timestamp: '2020-01-01 10:57:01',
+    sampling_rate: null },
+  { sensordatavalues:
+     [ { value_type: 'temperature', id: 12607161885, value: '10.30' },
+       { value_type: 'humidity', value: '94.80', id: 12607161886 },
+       [length]: 2 ],
+    location:
+     { latitude: '50.796',
+       exact_location: 0,
+       country: 'DE',
+       id: 2018,
+       indoor: 0,
+       longitude: '7.132',
+       altitude: '53.0' },
+    id: 5935220189,
+    timestamp: '2020-01-01 10:57:01',
+    sampling_rate: null,
+    sensor:
+     { sensor_type: { id: 9, name: 'DHT22', manufacturer: 'various' },
+       id: 4008,
+       pin: '7' } },
+  { sensordatavalues:
+     [ { value: '4.30', id: 12607161880, value_type: 'temperature' },
+       { value_type: 'humidity', value: '74.50', id: 12607161884 },
+       [length]: 2 ],
+    location:
+     { latitude: '50.98868222751',
+       id: 14536,
+       country: 'DE',
+       indoor: 0,
+       altitude: '50.4',
+       longitude: '7.03727155924',
+       exact_location: 1 },
+    id: 5935220187,
+    timestamp: '2020-01-01 10:57:01',
+    sampling_rate: null,
+    sensor:
+     { sensor_type: { manufacturer: 'various', id: 9, name: 'DHT22' },
+       id: 26988,
+       pin: '7' } },
+  { location:
+     { latitude: '50.98935082139',
+       exact_location: 1,
+       id: 20361,
+       country: 'BE',
+       altitude: '14.7',
+       indoor: 0,
+       longitude: '4.80760484934' },
+    id: 5935220172,
+    sensordatavalues:
+     [ { value_type: 'temperature', value: '5.30', id: 12607161847 },
+       { value: '78.90', id: 12607161848, value_type: 'humidity' },
+       [length]: 2 ],
+    sensor:
+     { sensor_type: { manufacturer: 'various', name: 'DHT22', id: 9 },
+       id: 34083,
+       pin: '7' },
+    timestamp: '2020-01-01 10:57:01',
+    sampling_rate: null },
+
+
+*/
+
+/*
+DOESNT WORK ANYMORE???
 
 path: '/data/v2/data.dust.min.json', // average of all measurements per sensor of the last 5 minutes, dust sensors only
 

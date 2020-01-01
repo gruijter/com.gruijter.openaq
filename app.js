@@ -1,5 +1,5 @@
 /*
-Copyright 2019, Robin de Gruijter (gruijter@hotmail.com)
+Copyright 2019 - 2020, Robin de Gruijter (gruijter@hotmail.com)
 
 This file is part of com.gruijter.openaq.
 
@@ -75,8 +75,20 @@ https://aqicn.org/json-api/doc/
 waqi.info
 http://aqicn.org/sources/
 
-Luftdaten:
+Luftdaten / Sensor Community
 luftdaten.info
 https://maps.luftdaten.info/#2/0/0
 https://github.com/opendata-stuttgart/meta/wiki/APIs
+
+from 2020:
+https://sensor.community/
+https://maps.sensor.community/data/v2/data.dust.min.json
+
+
+Luchtmeetnet.nl:
+https://www.luchtmeetnet.nl/static/pdf/open_data.pdf
+https://api-docs.luchtmeetnet.nl/?version=latest
+http://geodata.rivm.nl/geoserver/wms?
+https://www.luchtmeetnet.nl/stations/alle-provincies/alle-gemeentes/alle-stoffen
+
 */

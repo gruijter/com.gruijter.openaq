@@ -1,7 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable class-methods-use-this */
 /*
-Copyright 2019, Robin de Gruijter (gruijter@hotmail.com)
+Copyright 2019 - 2020, Robin de Gruijter (gruijter@hotmail.com)
 
 This file is part of com.gruijter.openaq.
 
@@ -37,7 +37,7 @@ class GenericAQMonitorDriver extends Homey.Driver {
 			const options = {
 				lat: Math.round(Homey.ManagerGeolocation.getLatitude() * 100000000) / 100000000,
 				lon: Math.round(Homey.ManagerGeolocation.getLongitude() * 100000000) / 100000000,
-				dst: 250, //	Radius in kilometres,
+				dst: 100, //	Radius in kilometres,
 			};
 			const deviceSets = await this.discover(options);
 			deviceSets.forEach((set) => {
@@ -52,6 +52,7 @@ class GenericAQMonitorDriver extends Homey.Driver {
 						dst: set.dst || 100, //	Radius in kilometres,
 						include_indoor: set.includeIndoor || false,
 						pollingInterval: set.pollingInterval || 10, // minutes
+						station_loc: set.stationLoc || 'unknown', // location description
 						station_dst: set.stationDst || 'unknown',	// distance to station (m)
 					},
 					capabilities: set.capabilities,
@@ -61,6 +62,7 @@ class GenericAQMonitorDriver extends Homey.Driver {
 			callback(null, devices);
 		} catch (error) {
 			this.error(error);
+			callback(error);
 		}
 	}
 
@@ -94,7 +96,7 @@ class GenericAQMonitorDriver extends Homey.Driver {
 				});
 			});
 			req.setTimeout(this.timeout || 30000, () => req.abort());
-			req.once('error', e => reject(e));
+			req.once('error', (e) => reject(e));
 			req.end();
 		});
 	}

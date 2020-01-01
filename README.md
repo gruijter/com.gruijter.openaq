@@ -6,13 +6,13 @@ Add one or multiple virtual outdoor air quality monitors to Homey. The informati
 available free of charge by a number of services. Depending on the service and station you
 select, the following parameters are provided:
 
-* PM2.5
-* PM10
-* O3 (Ozone)
+* PM2.5 (particulate matter)
+* PM10 (particulate matter)
+* O3 (ozone)
 * SO2 (sulfur dioxide)
 * NO2 (nitrogen dioxide)
 * CO (carbon monoxide)
-* BC (black carbon, only available with OpenAQ in certain countries)
+* BC (black carbon, only available with LuchtmeetnetNL and OpenAQ in certain countries)
 
 ![image][mobile-device-image]
 
@@ -48,9 +48,21 @@ coverage then OpenAQ, but it needs an API key. You can get a free API key [here]
 Luftdaten is dedicated to fine dust measurement with the Citizen Science project luftdaten.info.
 Thousands of citizens around the world installed self-built sensors on the outside their home.
 The data is limited to only show PM2.5 and PM10, but has a very high update rate up to once
-every minute.
+every minute. In november 2019 Luftdaten was integrated in sensor.community.
 
 [![LD Coverage Map][ld-image]][ld-map]
+
+### LuchtmeetnetNL ###
+This service implementation is in ALPHA state, and probably not functional at the moment.
+the following parameters are provided (Netherlands only):
+
+* NO (nitrogen monoxide)
+* C6H6 (benzene)
+* C7H8 (toluene)
+* C8H10 (xylene)
+* H2S (hydrogen sulfide)
+* UFP (Ultra fine particles)
+* NH3 (Ammonia)
 
 
 ### Manually changing device settings ###
@@ -96,7 +108,7 @@ Version changelog: [changelog.txt]
 [waqi-image]: https://aws1.discourse-cdn.com/business4/uploads/athom/original/2X/6/604388f07d54be99d4658ab5a9ebb988fc499d27.jpeg
 [here]: http://aqicn.org/data-platform/token/#/
 
-[ld-map]: https://maps.luftdaten.info/#2/0/0
+[ld-map]: https://maps.sensor.community/#2/0/0
 [ld-image]: https://aws1.discourse-cdn.com/business4/uploads/athom/original/2X/9/9417995ddd2875423bac02fbc35deff413005af4.jpeg
 
 [add-device]: https://aws1.discourse-cdn.com/business4/uploads/athom/original/2X/e/e92f7d5a1043622325236307dce3e2ee5ce139e0.png

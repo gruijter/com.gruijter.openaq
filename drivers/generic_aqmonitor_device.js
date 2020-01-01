@@ -1,5 +1,5 @@
 /*
-Copyright 2019, Robin de Gruijter (gruijter@hotmail.com)
+Copyright 2019 - 2020, Robin de Gruijter (gruijter@hotmail.com)
 
 This file is part of com.gruijter.openaq.
 
@@ -48,12 +48,12 @@ class GenericAQMonitorDevice extends Homey.Device {
 
 	// this method is called when the Device is added
 	onAdded() {
-		this.log(`AQMonitor added: ${this.getData().id}`);
+		this.log(`${this.getData().id} added: ${this.getName()}`);
 	}
 
 	// this method is called when the Device is deleted
 	onDeleted() {
-		this.log(`AQMonitor deleted: ${this.getData().id}`);
+		this.log(`${this.getData().id} deleted: ${this.getName()}`);
 		clearInterval(this.intervalIdDevicePoll);
 	}
 
@@ -61,7 +61,7 @@ class GenericAQMonitorDevice extends Homey.Device {
 	onSettings(newSettingsObj, oldSettingsObj, changedKeysArr, callback) {
 		// first stop polling the device, then start init after short delay
 		clearInterval(this.intervalIdDevicePoll);
-		this.log(`${this.getData().id} device settings changed`);
+		this.log(`${this.getData().id} ${this.getName()} device settings changed`);
 		this.setAvailable()
 			.catch(this.error);
 		setTimeout(() => {

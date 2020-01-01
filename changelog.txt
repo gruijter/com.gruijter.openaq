@@ -1,5 +1,6 @@
 Version changelog
 
+v1.3.0  2020.01.01 Fixed Luftdaten/sensor.Community. LuchtmeetnetNL alpha testing.
 v1.2.0  2019.09.06 Luftdaten added as service. Added station selection during device pairing. Updated icons (Thanks to DaneedeKruyff).
 v1.1.0  2019.09.03 AQICN/WAQI added as service. App architecture rewrite. V1.0.0 devices need to be deleted and re-added.
 v1.0.0  2019.09.01 Initial release

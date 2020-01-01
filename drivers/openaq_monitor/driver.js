@@ -1,5 +1,5 @@
 /*
-Copyright 2019, Robin de Gruijter (gruijter@hotmail.com)
+Copyright 2019 - 2020, Robin de Gruijter (gruijter@hotmail.com)
 
 This file is part of com.gruijter.openaq.
 
@@ -67,14 +67,14 @@ class OpenAQMonitorDriver extends GenericAQMonitorDriver {
 			const { settings } = device;
 			// filter for all locations in range that report the parameter
 			const hasParameter = results.filter((result) => {
-				const filteredArray = result.measurements.filter(measurement => measurement.parameter === parameter);
+				const filteredArray = result.measurements.filter((measurement) => measurement.parameter === parameter);
 				return filteredArray.length > 0;
 			});
 			// console.log(util.inspect(hasParameter, { depth: null, colors: true }));
 			// get the most recent value that is most nearby, is not zero or negative, is not older then 8 hrs
 			const timeAgo = (new Date(Date.now() - (8 * 60 * 60 * 1000))).toISOString();
 			const latestValue = hasParameter.reduce((accu, current) => {
-				const currentMeasurement = current.measurements.filter(measurement => measurement.parameter === parameter);
+				const currentMeasurement = current.measurements.filter((measurement) => measurement.parameter === parameter);
 				// currentMeasurement[0].city = current.city;
 				currentMeasurement[0].location = current.location;
 				currentMeasurement[0].coordinates = current.coordinates;
@@ -101,7 +101,7 @@ class OpenAQMonitorDriver extends GenericAQMonitorDriver {
 				const results = await this.getRawData({ settings });
 				const timeAgo = new Date(Date.now() - (8 * 60 * 60 * 1000));	// 8 hours
 				const withData = results.filter((station) => {
-					const hasData = station.measurements.filter(measurement => (measurement.value > 0)
+					const hasData = station.measurements.filter((measurement) => (measurement.value > 0)
 						&& (Date.parse(measurement.lastUpdated) > timeAgo));
 					return hasData.length > 0;
 				});
