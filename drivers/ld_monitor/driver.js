@@ -52,6 +52,7 @@ class LDMonitorDriver extends GenericAQMonitorDriver {
 					throw Error('Wrong content type, expected application/json');
 				}
 				const jsonData = JSON.parse(result.body);
+				// console.log('raw:');
 				// console.log(util.inspect(jsonData, { depth: null, colors: true }));
 				const results = jsonData;
 				return Promise.resolve(results);
@@ -61,6 +62,7 @@ class LDMonitorDriver extends GenericAQMonitorDriver {
 		};
 		// returns a normalised values object with at least { parameter: string, value: number }, or {} if not valid
 		this.getValue = (device, results, parameter) => {
+			// console.log(util.inspect(results, true, 10, true));
 			const { settings } = device;
 			let searchParam;
 			searchParam = (parameter === 'pm10') ? 'P1' : parameter;
@@ -73,22 +75,27 @@ class LDMonitorDriver extends GenericAQMonitorDriver {
 					const found = station.sensordatavalues.filter((dataPoint) => dataPoint.value_type === searchParam);
 					return found.length > 0;
 				})
-				.filter((station) => settings.include_indoor || !station.location.indoor);	// include indoor stations or not
-			// console.log(util.inspect(filtered, { depth: null, colors: true }));
-			const latest = filtered[0];
-			const nearest = filtered.reduce((accu, current) => {
-				const diff = this.distance(settings.lat, settings.lon, accu.location.latitude, accu.location.longitude)
-				- this.distance(settings.lat, settings.lon, current.location.latitude, current.location.longitude);
-				return (diff < 0) ? accu : current;
-			}, latest);
-			if (!nearest) return {};
+				.filter((station) => settings.include_indoor || !station.location.indoor)	// include indoor stations or not
+				.sort((a, b) => this.distance(settings.lat, settings.lon, a.location.latitude, a.location.longitude) // sort based on distance
+						-	this.distance(settings.lat, settings.lon, b.location.latitude, b.location.longitude));
+
+			// console.log('filtered and sorted:');
+			// console.log(util.inspect(filtered, true, 10, true));
+
+			if (!filtered[0]) return {};
+			const [nearest] = filtered // get most recent results from nearest station
+				.filter((station) => station.sensor.id === filtered[0].sensor.id)
+				.sort((a, b) => new Date(a.timestamp) > new Date(b.timestamp));
+
+			// console.log('nearest:');
+			// console.log(util.inspect(nearest, true, 10, true));
 			const value = {
 				parameter,
 				value: Number(nearest.sensordatavalues.filter((dataPoint) => dataPoint.value_type === searchParam)[0].value),
 				lastUpdated: new Date(nearest.timestamp),
 				location: `ID:${nearest.sensor.id} (${nearest.location.latitude},${nearest.location.longitude})`,
 				coordinates: { latitude: nearest.location.latitude, longitude: nearest.location.longitude },
-				url: `https://maps.sensor.communityo/#14/${nearest.location.latitude}/${nearest.location.longitude}`,
+				url: `https://maps.sensor.community/#14/${nearest.location.latitude}/${nearest.location.longitude}`,
 				distance: this.distance(settings.lat, settings.lon, nearest.location.latitude, nearest.location.longitude),
 			};
 			return value;
@@ -135,7 +142,7 @@ class LDMonitorDriver extends GenericAQMonitorDriver {
 						name: `LD Monitor ${station.sensor.id}@${dist}m`,
 						lat: Number(station.location.latitude),
 						lon: Number(station.location.longitude),
-						dst: 0.01,
+						dst: 1,
 						stationDst: `${Math.round(dist)}`,
 						includeIndoor: false,
 						pollingInterval: 1,
@@ -153,7 +160,6 @@ class LDMonitorDriver extends GenericAQMonitorDriver {
 }
 
 module.exports = LDMonitorDriver;
-
 
 /*
 website: https://sensor.community/
@@ -261,7 +267,6 @@ Werte der letzten 5 Minuten eines bestimmten Sensors -> http://api.luftdaten.inf
     timestamp: '2020-01-01 10:57:01',
     sampling_rate: null },
 
-
 */
 
 /*
@@ -274,7 +279,6 @@ type: {}, // comma separated list of sensor types, i.e. 'SDS011,BME280'
 area: {lat,lon,distance}, // all sensors within a max. radius (km?) {lat,lon,distance}
 box: {lat1,lon1,lat2,lon2}, // all sensors in a 'box' with the given coordinates
 country: {countryCode}, // i.e. 'BE, DE, NL, ...'
-
 
 [ { id: 4767756759,
     sampling_rate: null,

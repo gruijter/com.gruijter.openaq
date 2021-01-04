@@ -1,14 +1,14 @@
 {
 	"id": "com.gruijter.openaq",
-	"version": "1.3.0",
+	"version": "1.3.1",
 	"compatibility": ">=1.5.0",
 	"sdk": 2,
 	"name": {
 		"en": "Outdoor AirQuality"
 	},
 	"description": {
-		"en": "Outdoor Air quality monitor from OpenAQ.org",
-		"nl": "Buitenluchtkwaliteit meter van OpenAQ.org "
+		"en": "Outdoor Air quality monitor",
+		"nl": "Buitenluchtkwaliteit meter"
 	},
 	"tags": {
 		"en": [ "pm25", "pm10", "so2", "sulfur dioxide", "no2", "nitrogen dioxide", "o3", "ozone", "co", "carbon monoxide", "bc", "black carbon", "air quality", "pollution", "openAQ", "Luftdaten", "Luchtmeetnet" ],

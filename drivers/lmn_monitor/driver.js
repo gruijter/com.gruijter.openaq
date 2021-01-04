@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 /*
-Copyright 2019 - 2020, Robin de Gruijter (gruijter@hotmail.com)
+Copyright 2019 - 2021, Robin de Gruijter (gruijter@hotmail.com)
 
 This file is part of com.gruijter.openaq.
 
@@ -30,7 +30,6 @@ const driverSpecifics = {
 	capabilities: ['measure_pm25', 'measure_pm10', 'measure_so2', 'measure_no2', 'measure_o3', 'measure_co', 'measure_bc',
 		'measure_no', 'measure_c6h6', 'measure_c7h8', 'measure_c8h10', 'measure_h2s', 'measure_ufp', 'measure_nh3'],
 };
-
 
 class LMNMonitorDriver extends GenericAQMonitorDriver {
 	onInit() {
@@ -242,7 +241,6 @@ rawData[station]:
         timestamp_measured: '2019-09-08T17:00:00+00:00' },
      no2: { value: 4.4, timestamp_measured: '2019-09-08T17:00:00+00:00' } } }
 
-
 /measurements :
 
 [ { formula: 'PS',
@@ -259,7 +257,6 @@ rawData[station]:
     timestamp_measured: '2019-09-08T13:00:00+00:00' },
   { formula: 'PM25',
 	station_number: 'NL49704',
-
 
 /stations/NL01489 :
 { data:
