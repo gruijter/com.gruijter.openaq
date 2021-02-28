@@ -40,14 +40,15 @@ class OpenAQMonitorDriver extends GenericAQMonitorDriver {
 				const { settings } = device;
 				const options = {
 					hostname: 'api.openaq.org',
-					path: `/v1/latest?coordinates=${settings.lat},${settings.lon}&radius=${settings.dst * 1000}&order_by=distance`,
+					path: `/v2/latest?coordinates=${settings.lat},${settings.lon}&radius=${settings.dst * 1000}`,
 					headers: {
 						'Content-Length': 0,
 					},
 					method: 'GET',
 				};
 				const result = await this._makeHttpsRequest(options);
-				if (result.statusCode !== 200 || !result.headers['content-type'].includes('application/json')) {
+				if (result.statusCode !== 200) throw Error(result.statusCode);
+				if (!result.headers['content-type'].includes('application/json')) {
 					throw Error('Wrong content type, expected application/json');
 				}
 				const jsonData = JSON.parse(result.body);
@@ -75,10 +76,10 @@ class OpenAQMonitorDriver extends GenericAQMonitorDriver {
 			const timeAgo = (new Date(Date.now() - (8 * 60 * 60 * 1000))).toISOString();
 			const latestValue = hasParameter.reduce((accu, current) => {
 				const currentMeasurement = current.measurements.filter((measurement) => measurement.parameter === parameter);
-				// currentMeasurement[0].city = current.city;
 				currentMeasurement[0].location = current.location;
 				currentMeasurement[0].coordinates = current.coordinates;
-				currentMeasurement[0].distance = Math.round(current.distance);
+				const dist = this.distance(settings.lat, settings.lon, current.coordinates.latitude, current.coordinates.longitude);
+				currentMeasurement[0].distance = Math.round(dist);
 				const bmTm = Date.parse(accu.lastUpdated);
 				const cmTm = Date.parse(currentMeasurement[0].lastUpdated);
 				if (!(currentMeasurement[0].value > 0) || (bmTm >= cmTm)) return accu;
@@ -105,15 +106,18 @@ class OpenAQMonitorDriver extends GenericAQMonitorDriver {
 						&& (Date.parse(measurement.lastUpdated) > timeAgo));
 					return hasData.length > 0;
 				});
+				const sorted = withData.sort((a, b) => this.distance(settings.lat, settings.lon, a.coordinates.latitude, a.coordinates.longitude)
+					- this.distance(settings.lat, settings.lon, b.coordinates.latitude, b.coordinates.longitude));
 				// add the 5 nearest stations
-				withData.forEach((station, index) => {
+				sorted.forEach((station, index) => {
 					if (index > 4) return;
+					const dist = this.distance(settings.lat, settings.lon, station.coordinates.latitude, station.coordinates.longitude);
 					const set = {
-						name: `OAQ Monitor ${station.city}@${Math.round(station.distance)}m`,
+						name: `OAQ Monitor ${station.city || station.location}@${Math.round(dist)}m`,
 						lat: Number(station.coordinates.latitude),
 						lon: Number(station.coordinates.longitude),
 						dst: 0.01,
-						stationDst: `${Math.round(station.distance)}`,
+						stationDst: `${Math.round(dist)}`,
 						capabilities: ['measure_pm25', 'measure_pm10', 'measure_so2', 'measure_no2', 'measure_o3', 'measure_co'],
 					};
 					deviceSets.push(set);
@@ -130,6 +134,94 @@ class OpenAQMonitorDriver extends GenericAQMonitorDriver {
 module.exports = OpenAQMonitorDriver;
 
 /*
+{
+  "meta": {
+    "name": "openaq-api",
+    "license": "CC BY 4.0d",
+    "website": "https://u50g7n0cbj.execute-api.us-east-1.amazonaws.com/",
+    "page": 1,
+    "limit": 100,
+    "found": 93
+  },
+  "results": [
+    {
+      "location": "Botlek-Spoortunnel",
+      "city": "Botlek",
+      "country": "NL",
+      "coordinates": {
+        "latitude": 51.8701,
+        "longitude": 4.31806
+      },
+      "measurements": [
+        {
+          "parameter": "no2",
+          "value": -995,
+          "lastUpdated": "2016-03-24T08:00:00+00:00",
+          "unit": "µg/m³"
+        },
+        {
+          "parameter": "pm25",
+          "value": -995,
+          "lastUpdated": "2016-03-24T08:00:00+00:00",
+          "unit": "µg/m³"
+        },
+        {
+          "parameter": "pm10",
+          "value": -995,
+          "lastUpdated": "2016-03-24T08:00:00+00:00",
+          "unit": "µg/m³"
+        }
+      ]
+    },
+    {
+      "location": "Leiden-Willem de Zwijgerlaan",
+      "city": "Leiden",
+      "country": "NL",
+      "coordinates": {
+        "latitude": 52.1678,
+        "longitude": 4.50756
+      },
+      "measurements": [
+        {
+          "parameter": "pm10",
+          "value": 18.99,
+          "lastUpdated": "2015-09-14T04:00:00+00:00",
+          "unit": "µg/m³"
+        }
+      ]
+    },
+    {
+      "location": "Balk-Trophornsterweg",
+      "city": "Balk",
+      "country": "NL",
+      "coordinates": {
+        "latitude": 52.9169,
+        "longitude": 5.57349
+      },
+      "measurements": [
+        {
+          "parameter": "o3",
+          "value": 57.27,
+          "lastUpdated": "2021-02-27T03:00:00+00:00",
+          "unit": "µg/m³"
+        },
+        {
+          "parameter": "pm10",
+          "value": -7.09,
+          "lastUpdated": "2021-02-27T03:00:00+00:00",
+          "unit": "µg/m³"
+        },
+        {
+          "parameter": "no2",
+          "value": 3.09,
+          "lastUpdated": "2021-02-27T03:00:00+00:00",
+          "unit": "µg/m³"
+        }
+      ]
+    },
+*/
+
+/* V1 (oud)
 { meta:
    { name: 'openaq-api',
      license: 'CC BY 4.0',

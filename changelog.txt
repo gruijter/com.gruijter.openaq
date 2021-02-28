@@ -1,5 +1,6 @@
 Version changelog
 
+v1.3.2  2021.02.28 Fixed OpenAQ (API updated to V2).
 v1.3.1  2021.01.04 Fixed luftdaten to select particular station, and to get latest data.
 v1.3.0  2020.01.01 Fixed Luftdaten/sensor. LuchtmeetnetNL alpha testing.
 v1.2.0  2019.09.06 Luftdaten added as service. Added station selection during device pairing. Updated icons (Thanks to DaneedeKruyff).
