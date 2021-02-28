@@ -4,5 +4,8 @@
   },
   "1.3.1": {
     "en": "Fixed luftdaten to select particular station, and to get latest data."
+  },
+  "1.3.2": {
+    "en": "Fixed OpenAQ (API updated to V2)."
   }
 }
