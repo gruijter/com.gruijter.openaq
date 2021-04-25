@@ -22,11 +22,13 @@ along with com.gruijter.openaq.  If not, see <http://www.gnu.org/licenses/>.
 const Homey = require('homey');
 const Logger = require('./captureLogs.js');
 
-class AQApp extends Homey.App {
+class App extends Homey.App {
 
 	onInit() {
+		process.env.LOG_LEVEL = 'info'; // info or debug
+		if (!this.logger) this.logger = new Logger({ name: 'log', length: 200, homey: this.homey });
 		this.log('OpenAQ app is running!');
-		this.logger = new Logger('log', 200);
+
 		// register some listeners
 		process.on('unhandledRejection', (error) => {
 			this.error('unhandledRejection! ', error);
@@ -34,7 +36,7 @@ class AQApp extends Homey.App {
 		process.on('uncaughtException', (error) => {
 			this.error('uncaughtException! ', error);
 		});
-		Homey
+		this.homey
 			.on('unload', () => {
 				this.log('app unload called');
 				// save logs to persistant storage
@@ -44,9 +46,9 @@ class AQApp extends Homey.App {
 				this.log('memwarn!');
 			});
 		// do garbage collection every 10 minutes
-		this.intervalIdGc = setInterval(() => {
-			global.gc();
-		}, 1000 * 60 * 10);
+		// this.intervalIdGc = setInterval(() => {
+		// 	global.gc();
+		// }, 1000 * 60 * 10);
 	}
 
 	//  stuff for frontend API
@@ -60,7 +62,7 @@ class AQApp extends Homey.App {
 
 }
 
-module.exports = AQApp;
+module.exports = App;
 
 /*
 LINKS:

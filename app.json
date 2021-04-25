@@ -1,8 +1,8 @@
 {
 	"id": "com.gruijter.openaq",
-	"version": "1.3.2",
-	"compatibility": ">=1.5.0",
-	"sdk": 2,
+	"version": "2.0.0",
+	"compatibility": ">=5.0.0",
+	"sdk": 3,
 	"name": {
 		"en": "Outdoor AirQuality"
 	},
@@ -43,6 +43,16 @@
 		"url": "https://github.com/gruijter/com.gruijter.openaq/issues"
 	},
 	"homeyCommunityTopicId": 17548,
+	"api": {
+		"getLogs": {
+		  "method": "get",
+		  "path": "/getlogs"
+		},
+		"deleteLogs": {
+		  "method": "get",
+		  "path": "/deletelogs"
+		}
+	},
 	"capabilities": {
 		"measure_pm10": {
 			"type": "number",
@@ -161,28 +171,6 @@
 						"en": "µg/m³"
 					}
 				}
-			},
-			"mobile": {
-				"components": [
-					{
-						"id": "icon"
-					},
-					{
-						"id": "sensor",
-						"capabilities": [ "measure_pm25", "measure_pm10", "measure_so2", "measure_no2", "measure_o3", "measure_co", "measure_bc" ],
-						"options": {
-							"icons": {
-								"measure_pm25": "./assets/measure_pm25.svg",
-								"measure_pm10": "./assets/measure_pm10.svg",
-								"measure_so2": "./assets/measure_so2.svg",
-								"measure_no2": "./assets/measure_no2.svg",
-								"measure_o3": "./assets/measure_o3.svg",
-								"measure_co": "./assets/measure_co.svg",
-								"measure_bc": "./assets/measure_bc.svg"
-							}
-						}
-					}
-				]
 			},
 			"pair": [
 				{
@@ -321,28 +309,6 @@
 					}
 				}
 			},
-			"mobile": {
-				"components": [
-					{
-						"id": "icon"
-					},
-					{
-						"id": "sensor",
-						"capabilities": [ "measure_pm25", "measure_pm10", "measure_so2", "measure_no2", "measure_o3", "measure_co" ],
-						"options": {
-							"icons": {
-								"measure_pm25": "./assets/measure_pm25.svg",
-								"measure_pm10": "./assets/measure_pm10.svg",
-								"measure_so2": "./assets/measure_so2.svg",
-								"measure_no2": "./assets/measure_no2.svg",
-								"measure_o3": "./assets/measure_o3.svg",
-								"measure_co": "./assets/measure_co.svg",
-								"measure_bc": "./assets/measure_bc.svg"
-							}
-						}
-					}
-				]
-			},
 			"pair": [
 				{
 					"id": "list_devices",
@@ -473,23 +439,6 @@
 						"en": "µg/m³"
 					}
 				}
-			},
-			"mobile": {
-				"components": [
-					{
-						"id": "icon"
-					},
-					{
-						"id": "sensor",
-						"capabilities": [ "measure_pm25", "measure_pm10" ],
-						"options": {
-							"icons": {
-								"measure_pm25": "./assets/measure_pm25.svg",
-								"measure_pm10": "./assets/measure_pm10.svg"
-							}
-						}
-					}
-				]
 			},
 			"pair": [
 				{
@@ -641,28 +590,6 @@
 						"en": "µg/m³"
 					}
 				}
-			},
-			"mobile": {
-				"components": [
-					{
-						"id": "icon"
-					},
-					{
-						"id": "sensor",
-						"capabilities": [ "measure_pm25", "measure_pm10", "measure_so2", "measure_no2", "measure_o3", "measure_co", "measure_bc" ],
-						"options": {
-							"icons": {
-								"measure_pm25": "./assets/measure_pm25.svg",
-								"measure_pm10": "./assets/measure_pm10.svg",
-								"measure_so2": "./assets/measure_so2.svg",
-								"measure_no2": "./assets/measure_no2.svg",
-								"measure_o3": "./assets/measure_o3.svg",
-								"measure_co": "./assets/measure_co.svg",
-								"measure_bc": "./assets/measure_bc.svg"
-							}
-						}
-					}
-				]
 			},
 			"pair": [
 				{

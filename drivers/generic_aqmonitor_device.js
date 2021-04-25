@@ -33,10 +33,7 @@ class GenericAQMonitorDevice extends Homey.Device {
 		this.log(`device init ${this.getClass()} ${this.getName()}`);
 		clearInterval(this.intervalIdDevicePoll);	// if polling, stop polling
 		this.settings = await this.getSettings();
-		// add driver functions
-		const driver = this.getDriver();
-		this.getRawData = driver.getRawData;
-		this.getValue = driver.getValue;
+
 		// start scanning
 		this.scan();
 		this.intervalIdDevicePoll = setInterval(async () => {
@@ -82,7 +79,7 @@ class GenericAQMonitorDevice extends Homey.Device {
 	async scan() {
 		try {
 			const device = this;
-			const rawData = await this.getRawData(device)
+			const rawData = await this.driver.getRawData(device)
 				.catch((error) => {
 					this.setSettings({ station_dst: error.toString() });
 					throw error;
@@ -91,7 +88,7 @@ class GenericAQMonitorDevice extends Homey.Device {
 			// ['measure_pm25', 'measure_pm10', 'measure_so2', 'measure_no2', 'measure_o3', 'measure_co', 'measure_bc']
 			const values = [];
 			capabilities.forEach((capability) => {
-				values.push(this.getValue(device, rawData, capability.replace('measure_', '')));
+				values.push(this.driver.getValue(device, rawData, capability.replace('measure_', '')));
 			});
 			this.log(values);
 			values.forEach((value) => {

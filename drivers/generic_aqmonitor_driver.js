@@ -35,8 +35,8 @@ class GenericAQMonitorDriver extends Homey.Driver {
 		try {
 			const devices = [];
 			const options = {
-				lat: Math.round(Homey.ManagerGeolocation.getLatitude() * 100000000) / 100000000,
-				lon: Math.round(Homey.ManagerGeolocation.getLongitude() * 100000000) / 100000000,
+				lat: Math.round(this.homey.geolocation.getLatitude() * 100000000) / 100000000,
+				lon: Math.round(this.homey.geolocation.getLongitude() * 100000000) / 100000000,
 				dst: 100, //	Radius in kilometres,
 			};
 			const deviceSets = await this.discover(options);
@@ -47,8 +47,8 @@ class GenericAQMonitorDriver extends Homey.Driver {
 					settings: {
 						service: this.ds.service,
 						api_key: this.ds.apiKey,
-						lat: set.lat || Math.round(Homey.ManagerGeolocation.getLatitude() * 100000000) / 100000000,
-						lon: set.lon || Math.round(Homey.ManagerGeolocation.getLongitude() * 100000000) / 100000000,
+						lat: set.lat || Math.round(this.homey.geolocation.getLatitude() * 100000000) / 100000000,
+						lon: set.lon || Math.round(this.homey.geolocation.getLongitude() * 100000000) / 100000000,
 						dst: set.dst || 100, //	Radius in kilometres,
 						include_indoor: set.includeIndoor || false,
 						pollingInterval: set.pollingInterval || 10, // minutes
@@ -83,21 +83,50 @@ class GenericAQMonitorDriver extends Homey.Driver {
 		};
 	}
 
-	_makeHttpsRequest(options) {
+	// _makeHttpsRequest(options) {
+	// 	return new Promise((resolve, reject) => {
+	// 		const req = https.request(options, (res) => {
+	// 			let resBody = '';
+	// 			res.on('data', (chunk) => {
+	// 				resBody += chunk;
+	// 			});
+	// 			res.once('end', () => {
+	// 				res.body = resBody;
+	// 				return resolve(res); // resolve the request
+	// 			});
+	// 		});
+	// 		req.setTimeout(this.timeout || 30000, () => req.abort());
+	// 		req.once('error', (e) => reject(e));
+	// 		req.end();
+	// 	});
+	// }
+
+	_makeHttpsRequest(options, postData, timeout) {
 		return new Promise((resolve, reject) => {
-			const req = https.request(options, (res) => {
+			const opts = options;
+			opts.timeout = timeout || 30000;
+			const req = https.request(opts, (res) => {
 				let resBody = '';
 				res.on('data', (chunk) => {
 					resBody += chunk;
 				});
 				res.once('end', () => {
+					if (!res.complete) {
+						return reject(Error('The connection was terminated while the message was still being sent'));
+					}
 					res.body = resBody;
 					return resolve(res); // resolve the request
 				});
 			});
-			req.setTimeout(this.timeout || 30000, () => req.abort());
-			req.once('error', (e) => reject(e));
-			req.end();
+			req.on('error', (e) => {
+				req.destroy();
+				return reject(e);
+			});
+			req.on('timeout', () => {
+				req.destroy();
+			});
+			// req.write(postData);
+			req.end(postData);
 		});
 	}
 
