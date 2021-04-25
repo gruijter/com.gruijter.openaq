@@ -9,28 +9,21 @@ function displayLogs(lines) {
 function updateLogs() {
 	try {
 		displayLogs('');
-		const showLogs = $('#show_logs').prop('checked');
-		const showErrors = $('#show_errors').prop('checked');
 		Homey.api('GET', 'getlogs/', null, (err, result) => {
 			if (!err) {
 				let lines = '';
 				result
 					.reverse()
 					.forEach((line) => {
-						if (!showLogs) {
-							if (line.includes('[log]')) return;
-						}
-						if (!showErrors) {
-							if (line.includes('[err]')) return;
-						}
 						let logLine = line
-							.replace(' [MyApp]', '')
-							.replace(' [ManagerDrivers]', '');
-							// .replace(' [ts_ft002]', '');
+							.replace(' [ManagerDrivers]', '')
+							.replace(/\[Device:(.*?)\]/, '[dev]')
+							.replace(/\[Driver:(.*?)\]/, '[$1]');
 
 						// find location string and replace with clickable link
 						const locSearch = /coordinates.*?{ (.*?) }.*?/g;
 						let m;
+						// eslint-disable-next-line no-cond-assign
 						while ((m = locSearch.exec(line)) !== null) {
 							// This is necessary to avoid infinite loops with zero-width matches
 							if (m.index === locSearch.lastIndex) {
@@ -39,6 +32,7 @@ function updateLogs() {
 							const coordinates = m[1].split(', ');
 							const lat = coordinates[0].replace(/latitude: /, '');
 							const lon = coordinates[1].replace(/longitude: /, '');
+							// eslint-disable-next-line max-len
 							logLine = logLine.replace(`${m[0]}`, `<a href="http://maps.google.com/maps?q=loc:${lat},${lon}" target="_blank">link</a>`);
 							// line = line.replace(`${m[0]}`, `<a href="http://www.osm.org/?mlat=${lat}&mlon=${lon}#map=13/$1" target="_blank">coordinates: $1</a>`);
 						}
