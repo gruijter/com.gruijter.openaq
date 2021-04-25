@@ -28,6 +28,16 @@ const driverSpecifics = {
 	apiKey: 'N/A',
 };
 
+const searchStrings = {
+	pm25: 'P1',
+	pm10: 'P2',
+	temperature: 'temperature',
+	pressure: 'pressure',
+	humidity: 'humidity',
+};
+
+const capabilities = ['measure_pm25', 'measure_pm10', 'measure_temperature', 'measure_pressure', 'measure_humidity'];
+
 // add service specific properties and functions
 class LDMonitorDriver extends GenericAQMonitorDriver {
 	onInit() {
@@ -35,13 +45,15 @@ class LDMonitorDriver extends GenericAQMonitorDriver {
 
 		this.ds = driverSpecifics;
 		this.timeout = 30000;
+
 		// get raw data from service in JSON format
 		this.getRawData = async (device) => {
 			try {
 				const { settings } = device;
+				const dst = settings.dst >= 1 ? settings.dst : 1;
 				const options = {
 					hostname: 'data.sensor.community', // old: 'api.luftdaten.info'
-					path: `/airrohr/v1/filter/area=${settings.lat},${settings.lon},${settings.dst}`,
+					path: `/airrohr/v1/filter/area=${settings.lat},${settings.lon},${dst}`,
 					headers: {
 						'Content-Length': 0,
 					},
@@ -60,17 +72,18 @@ class LDMonitorDriver extends GenericAQMonitorDriver {
 				return Promise.reject(error.message);
 			}
 		};
+
 		// returns a normalised values object with at least { parameter: string, value: number }, or {} if not valid
 		this.getValue = (device, results, parameter) => {
 			// console.log(util.inspect(results, true, 10, true));
 			const { settings } = device;
-			let searchParam;
-			searchParam = (parameter === 'pm10') ? 'P1' : parameter;
-			searchParam = (parameter === 'pm25') ? 'P2' : searchParam;
+			const searchParam = searchStrings[parameter];
 			if (!searchParam) return {};
 			const timeAgo = (new Date(Date.now() - (8 * 60 * 60 * 1000)));
+			const maxDist = settings.dst * 1000;
 			const filtered = results
 				.filter((station) => new Date(station.timestamp) > timeAgo)	// not older then 8 hrs
+				.filter((station) => this.distance(settings.lat, settings.lon, station.location.latitude, station.location.longitude) <= maxDist)
 				.filter((station) => {	// has the requested parameter
 					const found = station.sensordatavalues.filter((dataPoint) => dataPoint.value_type === searchParam);
 					return found.length > 0;
@@ -98,8 +111,10 @@ class LDMonitorDriver extends GenericAQMonitorDriver {
 				url: `https://maps.sensor.community/#14/${nearest.location.latitude}/${nearest.location.longitude}`,
 				distance: this.distance(settings.lat, settings.lon, nearest.location.latitude, nearest.location.longitude),
 			};
+			if (parameter === 'pressure') value.value /= 100;
 			return value;
 		};
+
 		this.discover = async (settings) => {
 			try {
 				const deviceSets = [
@@ -107,13 +122,15 @@ class LDMonitorDriver extends GenericAQMonitorDriver {
 						name: 'LD Monitor @Homey',
 						includeIndoor: false,
 						pollingInterval: 1,
-						capabilities: ['measure_pm25', 'measure_pm10'],
+						dst: settings.dst,
+						capabilities,
 					},
 					{
 						name: 'LD Monitor @Homey_with_indoor',
 						includeIndoor: true,
 						pollingInterval: 1,
-						capabilities: ['measure_pm25', 'measure_pm10'],
+						dst: settings.dst,
+						capabilities,
 					},
 				];
 				const results = await this.getRawData({ settings });
@@ -142,11 +159,11 @@ class LDMonitorDriver extends GenericAQMonitorDriver {
 						name: `LD Monitor ${station.sensor.id}@${dist}m`,
 						lat: Number(station.location.latitude),
 						lon: Number(station.location.longitude),
-						dst: 1,
+						dst: 0.01,
 						stationDst: `${Math.round(dist)}`,
 						includeIndoor: false,
 						pollingInterval: 1,
-						capabilities: ['measure_pm25', 'measure_pm10'],
+						capabilities,
 					};
 					deviceSets.push(set);
 				});

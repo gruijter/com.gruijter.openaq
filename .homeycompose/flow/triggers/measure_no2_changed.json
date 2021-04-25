@@ -1,0 +1,29 @@
+{
+  "id": "measure_no2_changed",
+  "title": {
+    "en": "The NO2-level changed",
+    "nl": "Het NO2 niveau is veranderd",
+    "de": "Der NO2-Gehalt hat sich geändert"
+  },
+  "args": [
+    {
+      "name": "monitor",
+      "type": "device",
+      "filter": "driver_id=openaq_monitor|waqi_monitor|lmn_monitor",
+      "placeholder": {
+        "en": "Which monitor",
+        "nl": "Welke meter"
+      }
+    }
+  ],
+  "tokens": [
+    {
+      "name": "measure_no2",
+      "title": {
+        "en": "NO2"
+      },
+      "type": "number",
+      "example": 20
+    }
+  ]
+}

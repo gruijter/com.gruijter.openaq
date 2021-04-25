@@ -1,0 +1,18 @@
+{
+  "type": "number",
+  "title": {
+    "en": "SO2"
+  },
+  "units": {
+    "en": "µg/m³"
+  },
+  "insights": true,
+  "desc": {
+    "en": "SO2 - sulfur dioxide (μg/m3)"
+  },
+  "decimals": 2,
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor",
+  "icon": "./assets/measure_so2.svg"
+}

@@ -1,0 +1,20 @@
+{
+  "type": "number",
+  "title": {
+    "en": "PM10"
+  },
+  "units": {
+    "en": "µg/m³"
+  },
+  "insights": true,
+  "desc": {
+    "en": "Atmospheric Particulate Matter (μg/m3)",
+    "nl": "Deeltjesvormige luchtverontreiniging (μg/m3)",
+    "de": "Atmosphärischer Feinstaub (μg/m3)"
+  },
+  "decimals": 2,
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor",
+  "icon": "./assets/measure_pm10.svg"
+}

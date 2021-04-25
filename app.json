@@ -1,843 +1,933 @@
 {
-	"id": "com.gruijter.openaq",
-	"version": "2.0.0",
-	"compatibility": ">=5.0.0",
-	"sdk": 3,
-	"name": {
-		"en": "Outdoor AirQuality"
-	},
-	"description": {
-		"en": "Outdoor Air quality monitor",
-		"nl": "Buitenluchtkwaliteit meter"
-	},
-	"tags": {
-		"en": [ "pm25", "pm10", "so2", "sulfur dioxide", "no2", "nitrogen dioxide", "o3", "ozone", "co", "carbon monoxide", "bc", "black carbon", "air quality", "pollution", "openAQ", "Luftdaten", "Luchtmeetnet" ],
-		"nl": [ "pm25", "pm10", "so2", "zwavel dioxide", "no2", "stikstof dioxide", "o3", "ozon", "co", "koolmonoxide", "bc", "roet", "luchtkwaliteit", "vervuiling", "openAQ", "Luftdaten", "Luchtmeetnet"]
-	},
-	"category": [
-		"climate", "internet", "tools"
-	],
-	"permissions": [ "homey:manager:geolocation" ],
-	"images": {
-		"large": "/assets/images/large.png",
-		"small": "/assets/images/small.png"
-	},
-	"author": {
-		"name": "Robin Gruijter",
-		"email": "gruijter@hotmail.com"
-	},
-	"contributors": {
-		"developers": [{"name": "Robin de Gruijter","email": "gruijter@hotmail.com"}],
-		"translators": [{"name": "🇬🇧 Robin"},{"name": "🇳🇱 Robin"}]
-	},
-	"copyright": "Robin de Gruijter (gruijter@hotmail.com)",
-	"license": " GPL-3.0-or-later",
-	"contributing": {
-		"donate": {
-			"paypal": {
-				"username": "gruijter"
-			}
-		}
-	},
-	"bugs": {
-		"url": "https://github.com/gruijter/com.gruijter.openaq/issues"
-	},
-	"homeyCommunityTopicId": 17548,
-	"api": {
-		"getLogs": {
-		  "method": "get",
-		  "path": "/getlogs"
-		},
-		"deleteLogs": {
-		  "method": "get",
-		  "path": "/deletelogs"
-		}
-	},
-	"capabilities": {
-		"measure_pm10": {
-			"type": "number",
-			"title": {
-				"en": "PM10"
-			},
-			"units": {
-				"en": "µg/m³"
-			},
-			"insights": true,
-			"desc": {
-				"en": "Atmospheric Particulate Matter (μg/m3)",
-				"nl": "Deeltjesvormige luchtverontreiniging (μg/m3)",
-				"de": "Atmosphärischer Feinstaub (μg/m3)"
-			},
-			"decimals": 2,
-			"getable": true,
-			"setable": false,
-			"uiComponent": "sensor",
-			"icon": "./assets/measure_pm10.svg"
-		},
-		"measure_so2": {
-			"type": "number",
-			"title": {
-				"en": "SO2"
-			},
-			"units": {
-				"en": "µg/m³"
-			},
-			"insights": true,
-			"desc": {
-				"en": "SO2 - sulfur dioxide (μg/m3)"
-			},
-			"decimals": 2,
-			"getable": true,
-			"setable": false,
-			"uiComponent": "sensor",
-			"icon": "./assets/measure_so2.svg"
-		},
-		"measure_no2": {
-			"type": "number",
-			"title": {
-				"en": "NO2"
-			},
-			"units": {
-				"en": "µg/m³"
-			},
-			"insights": true,
-			"desc": {
-				"en": "NO2 - nitrogen dioxide (μg/m3)"
-			},
-			"decimals": 2,
-			"getable": true,
-			"setable": false,
-			"uiComponent": "sensor",
-			"icon": "./assets/measure_no2.svg"
-		},
-		"measure_o3": {
-			"type": "number",
-			"title": {
-				"en": "O3"
-			},
-			"units": {
-				"en": "µg/m³"
-			},
-			"insights": true,
-			"desc": {
-				"en": "O3 - ozone (μg/m3)"
-			},
-			"decimals": 2,
-			"getable": true,
-			"setable": false,
-			"uiComponent": "sensor",
-			"icon": "./assets/measure_o3.svg"
-		},
-		"measure_bc": {
-			"type": "number",
-			"title": {
-				"en": "BC"
-			},
-			"units": {
-				"en": "µg/m³"
-			},
-			"insights": true,
-			"desc": {
-				"en": "BC - black carbon (μg/m3)"
-			},
-			"decimals": 2,
-			"getable": true,
-			"setable": false,
-			"uiComponent": "sensor",
-			"icon": "./assets/measure_bc.svg"
-		}
-	},
-	"drivers": [
-		{
-			"id": "openaq_monitor",
-			"name": {
-				"en": "OpenAQ Monitor",
-				"nl": "OpenAQ Meter"
-			},
-			"images": {
-			 "large": "drivers/openaq_monitor/assets/images/large.jpg",
-			 "small": "drivers/openaq_monitor/assets/images/small.jpg"
-		 	},
-			"class": "sensor",
-			"capabilities": [ "measure_pm25", "measure_pm10", "measure_so2", "measure_no2", "measure_o3", "measure_co", "measure_bc" ],
-			"capabilitiesOptions": {
-				"measure_pm25": {
-					"units": {
-						"en": "µg/m³"
-					}
-				},
-				"measure_co": {
-					"units": {
-						"en": "µg/m³"
-					}
-				}
-			},
-			"pair": [
-				{
-					"id": "list_devices",
-					"template": "list_devices",
-					"navigation": {
-						"next": "add_devices"
-				},
-					"options": {
-						"singular": true
-					}
-				},
-				{
-					"id": "add_devices",
-					"template": "add_devices"
-				}
-			],
-			"settings": [
-				{
-					"type": "group",
-					"label": {
-						"en": "Monitor settings",
-						"nl": "Meter instellingen"
-					},
-					"children": [
-						{
-							"id": "lat",
-							"type": "number",
-							"label": {
-								"en": "Latitude",
-								"nl": "Breedtegraad"
-							},
-							"hint": {
-								"en": "The latitude of the monitor.",
-								"nl": "De breedtegraad van de monitor."
-							  },
-							"value": 52.228936
-						},
-						{
-							"id": "lon",
-							"type": "number",
-							"label": {
-								"en": "Longitude",
-								"nl": "Lengtegraad"
-							},
-							"hint": {
-								"en": "The longitude of the monitor.",
-								"nl": "De lengtegraad van de monitor."
-							  },
-							"value": 5.321492
-						},
-						{
-							"id": "dst",
-							"type": "number",
-							"label": {
-								"en": "Max. range (km)",
-								"nl": "Max. afstand (km)"
-							},
-							"hint": {
-								"en": "The maximum distance used to find online data.",
-								"nl": "De maximale afstand om online gegevens te vinden."
-							},
-							"attr": { "min": 0, "max": 250 },
-							"value": 100
-						},
-						{
-							"id": "pollingInterval",
-							"type": "number",
-							"label": {
-								"en": "Scan interval (minutes)",
-								"nl": "Scan interval (minuten)"
-							},
-							"attr": { "min": 5 },
-							"value": 10
-						}
-					]
-				},
-				{
-					"type": "group",
-					"label": {
-						"en": "Service information",
-						"nl": "Dienst informatie"
-					},
-					"children": [
-						{
-							"id": "station_loc",
-							"type": "label",
-							"label": {
-								"en": "Station location",
-								"nl": "Station locatie"
-							},
-							"hint": {
-								"en": "Location of closest station used to find online data.",
-								"nl": "Locatie van dichtsbijzijnde station om online gegevens te vinden."
-							},
-							"value": ""
-						},
-						{
-							"id": "station_dst",
-							"type": "label",
-							"label": {
-								"en": "Station distance (m)",
-								"nl": "Afstand tot station (m)"
-							},
-							"hint": {
-								"en": "Distance to closest station used to find online data.",
-								"nl": "Afstand tot dichtsbijzijnde station om online gegevens te vinden."
-							},
-							"value": ""
-						}
-					]
-				}
-			]
-		},
-		{
-			"id": "waqi_monitor",
-			"name": {
-				"en": "WAQI Monitor",
-				"nl": "WAQI Meter"
-			},
-			"images": {
-			 "large": "drivers/waqi_monitor/assets/images/large.jpg",
-			 "small": "drivers/waqi_monitor/assets/images/small.jpg"
-		 	},
-			"class": "sensor",
-			"capabilities": [ "measure_pm25", "measure_pm10", "measure_so2", "measure_no2", "measure_o3", "measure_co" ],
-			"capabilitiesOptions": {
-				"measure_pm25": {
-					"units": {
-						"en": "µg/m³"
-					}
-				},
-				"measure_co": {
-					"units": {
-						"en": "µg/m³"
-					}
-				}
-			},
-			"pair": [
-				{
-					"id": "list_devices",
-					"template": "list_devices",
-					"navigation": {
-						"next": "add_devices"
-				},
-					"options": {
-						"singular": true
-					}
-				},
-				{
-					"id": "add_devices",
-					"template": "add_devices"
-				}
-			],
-			"settings": [
-				{
-					"type": "group",
-					"label": {
-						"en": "Monitor settings",
-						"nl": "Meter instellingen"
-					},
-					"children": [
-						{
-							"id": "api_key",
-							"type": "password",
-							"label": {
-								"en": "API Key",
-								"nl": "API Sleutel"
-							},
-							"hint": {
-								"en": "Get a free API key from AQICN.org. Leave empty to use built-in Homey key.",
-								"nl": "Haal een gratis API sleutel bij AQICN.org. Leeg laten om de ingebouwde Homey sleutel te gebruiken."
-							  },
-							"value": "demo"
-						},
-						{
-							"id": "lat",
-							"type": "number",
-							"label": {
-								"en": "Latitude",
-								"nl": "Breedtegraad"
-							},
-							"hint": {
-								"en": "The latitude of the monitor.",
-								"nl": "De breedtegraad van de monitor."
-							  },
-							"value": 52.228936
-						},
-						{
-							"id": "lon",
-							"type": "number",
-							"label": {
-								"en": "Longitude",
-								"nl": "Lengtegraad"
-							},
-							"hint": {
-								"en": "The longitude of the monitor.",
-								"nl": "De lengtegraad van de monitor."
-							  },
-							"value": 5.321492
-						},
-						{
-							"id": "pollingInterval",
-							"type": "number",
-							"label": {
-								"en": "Scan interval (minutes)",
-								"nl": "Scan interval (minuten)"
-							},
-							"attr": { "min": 5 },
-							"value": 10
-						}
-					]
-				},
-				{
-					"type": "group",
-					"label": {
-						"en": "Service information",
-						"nl": "Dienst informatie"
-					},
-					"children": [
-						{
-							"id": "station_loc",
-							"type": "label",
-							"label": {
-								"en": "Station location",
-								"nl": "Station locatie"
-							},
-							"hint": {
-								"en": "Location of closest station used to find online data.",
-								"nl": "Locatie van dichtsbijzijnde station om online gegevens te vinden."
-							},
-							"value": ""
-						},
-						{
-							"id": "station_dst",
-							"type": "label",
-							"label": {
-								"en": "Station distance (m)",
-								"nl": "Afstand tot station (m)"
-							},
-							"hint": {
-								"en": "Distance to closest station used to find online data.",
-								"nl": "Afstand tot dichtsbijzijnde station om online gegevens te vinden."
-							},
-							"value": ""
-						}
-					]
-				}
-			]
-		},
-		{
-			"id": "ld_monitor",
-			"name": {
-				"en": "Luftdaten Monitor",
-				"nl": "Luftdaten Meter"
-			},
-			"images": {
-			 "large": "drivers/ld_monitor/assets/images/large.jpg",
-			 "small": "drivers/ld_monitor/assets/images/small.jpg"
-		 	},
-			"class": "sensor",
-			"capabilities": [ "measure_pm25", "measure_pm10" ],
-			"capabilitiesOptions": {
-				"measure_pm25": {
-					"units": {
-						"en": "µg/m³"
-					}
-				}
-			},
-			"pair": [
-				{
-					"id": "list_devices",
-					"template": "list_devices",
-					"navigation": {
-						"next": "add_devices"
-				},
-					"options": {
-						"singular": true
-					}
-				},
-				{
-					"id": "add_devices",
-					"template": "add_devices"
-				}
-			],
-			"settings": [
-				{
-					"type": "group",
-					"label": {
-						"en": "Monitor settings",
-						"nl": "Meter instellingen"
-					},
-					"children": [
-						{
-							"id": "lat",
-							"type": "number",
-							"label": {
-								"en": "Latitude",
-								"nl": "Breedtegraad"
-							},
-							"hint": {
-								"en": "The latitude of the monitor.",
-								"nl": "De breedtegraad van de monitor."
-							  },
-							"value": 52.228936
-						},
-						{
-							"id": "lon",
-							"type": "number",
-							"label": {
-								"en": "Longitude",
-								"nl": "Lengtegraad"
-							},
-							"hint": {
-								"en": "The longitude of the monitor.",
-								"nl": "De lengtegraad van de monitor."
-							  },
-							"value": 5.321492
-						},
-						{
-							"id": "dst",
-							"type": "number",
-							"label": {
-								"en": "Max. range (km)",
-								"nl": "Max. afstand (km)"
-							},
-							"hint": {
-								"en": "The maximum distance used to find online data.",
-								"nl": "De maximale afstand om online gegevens te vinden."
-							},
-							"attr": { "min": 0, "max": 250 },
-							"value": 100
-						},
-						{
-							"id": "include_indoor",
-							"type": "checkbox",
-							"label": {
-								"en": "Include indoor stations",
-								"nl": "Inclusief binnenstations"
-							},
-							"hint": {
-								"en": "Include indoor stations to find online data.",
-								"nl": "Betrek binnenstations om online gegevens te vinden."
-							},
-							"value": false
-						},
-						{
-							"id": "pollingInterval",
-							"type": "number",
-							"label": {
-								"en": "Scan interval (minutes)",
-								"nl": "Scan interval (minuten)"
-							},
-							"attr": { "min": 1 },
-							"value": 10
-						}
-					]
-				},
-				{
-					"type": "group",
-					"label": {
-						"en": "Service information",
-						"nl": "Dienst informatie"
-					},
-					"children": [
-						{
-							"id": "station_loc",
-							"type": "label",
-							"label": {
-								"en": "Station location",
-								"nl": "Station locatie"
-							},
-							"hint": {
-								"en": "Location of closest station used to find online data.",
-								"nl": "Locatie van dichtsbijzijnde station om online gegevens te vinden."
-							},
-							"value": ""
-						},
-						{
-							"id": "station_dst",
-							"type": "label",
-							"label": {
-								"en": "Station distance (m)",
-								"nl": "Afstand tot station (m)"
-							},
-							"hint": {
-								"en": "Distance to closest station used to find online data.",
-								"nl": "Afstand tot dichtsbijzijnde station om online gegevens te vinden."
-							},
-							"value": ""
-						}
-					]
-				}
-			]
-		},
-		{
-			"id": "lmn_monitor",
-			"deprecated": true,
-			"name": {
-				"en": "LMN (NL) Monitor",
-				"nl": "LMN (NL) Meter"
-			},
-			"images": {
-			 "large": "drivers/lmn_monitor/assets/images/large.jpg",
-			 "small": "drivers/lmn_monitor/assets/images/small.jpg"
-		 	},
-			"class": "sensor",
-			"capabilities": [ "measure_pm25", "measure_pm10", "measure_so2", "measure_no2", "measure_o3", "measure_co", "measure_bc" ],
-			"capabilitiesOptions": {
-				"measure_pm25": {
-					"units": {
-						"en": "µg/m³"
-					}
-				},
-				"measure_co": {
-					"units": {
-						"en": "µg/m³"
-					}
-				}
-			},
-			"pair": [
-				{
-					"id": "list_devices",
-					"template": "list_devices",
-					"navigation": {
-						"next": "add_devices"
-				},
-					"options": {
-						"singular": true
-					}
-				},
-				{
-					"id": "add_devices",
-					"template": "add_devices"
-				}
-			],
-			"settings": [
-				{
-					"type": "group",
-					"label": {
-						"en": "Monitor settings",
-						"nl": "Meter instellingen"
-					},
-					"children": [
-						{
-							"id": "lat",
-							"type": "number",
-							"label": {
-								"en": "Latitude",
-								"nl": "Breedtegraad"
-							},
-							"hint": {
-								"en": "The latitude of the monitor.",
-								"nl": "De breedtegraad van de monitor."
-							  },
-							"value": 52.228936
-						},
-						{
-							"id": "lon",
-							"type": "number",
-							"label": {
-								"en": "Longitude",
-								"nl": "Lengtegraad"
-							},
-							"hint": {
-								"en": "The longitude of the monitor.",
-								"nl": "De lengtegraad van de monitor."
-							  },
-							"value": 5.321492
-						},
-						{
-							"id": "pollingInterval",
-							"type": "number",
-							"label": {
-								"en": "Scan interval (minutes)",
-								"nl": "Scan interval (minuten)"
-							},
-							"attr": { "min": 5 },
-							"value": 10
-						}
-					]
-				},
-				{
-					"type": "group",
-					"label": {
-						"en": "Service information",
-						"nl": "Dienst informatie"
-					},
-					"children": [
-						{
-							"id": "station_loc",
-							"type": "label",
-							"label": {
-								"en": "Station location",
-								"nl": "Station locatie"
-							},
-							"hint": {
-								"en": "Location of closest station used to find online data.",
-								"nl": "Locatie van dichtsbijzijnde station om online gegevens te vinden."
-							},
-							"value": ""
-						},
-						{
-							"id": "station_dst",
-							"type": "label",
-							"label": {
-								"en": "Station distance (m)",
-								"nl": "Afstand tot station (m)"
-							},
-							"hint": {
-								"en": "Distance to closest station used to find online data.",
-								"nl": "Afstand tot dichtsbijzijnde station om online gegevens te vinden."
-							},
-							"value": ""
-						}
-					]
-				}
-			]
-		}
-	],
-	"flow":	{
-		"triggers": [
-			{
-				"id": "measure_pm10_changed",
-				"title": {
-					"en": "The PM10-level changed",
-					"nl": "Het PM10 niveau is veranderd",
-					"de": "Der PM10-Gehalt hat sich geändert"
-				},
-				"args": [
-					{
-						"name": "monitor",
-						"type": "device",
-						"filter": "driver_id=openaq_monitor|waqi_monitor|ld_monitor|lmn_monitor",
-						"placeholder": {
-							"en": "Which monitor",
-							"nl": "Welke meter"
-						}
-					}
-				],
-				"tokens": [
-					{
-						"name": "measure_pm10",
-						"title": {
-							"en": "PM10"
-						},
-						"type": "number",
-						"example": 20
-					}
-				]
-			},
-			{
-				"id": "measure_s02_changed",
-				"title": {
-					"en": "The SO2-level changed",
-					"nl": "Het SO2 niveau is veranderd",
-					"de": "Der SO2-Gehalt hat sich geändert"
-				},
-				"args": [
-					{
-						"name": "monitor",
-						"type": "device",
-						"filter": "driver_id=openaq_monitor|waqi_monitor|lmn_monitor",
-						"placeholder": {
-							"en": "Which monitor",
-							"nl": "Welke meter"
-						}
-					}
-				],
-				"tokens": [
-					{
-						"name": "measure_so2",
-						"title": {
-							"en": "SO2"
-						},
-						"type": "number",
-						"example": 20
-					}
-				]
-			},
-			{
-				"id": "measure_no2_changed",
-				"title": {
-					"en": "The NO2-level changed",
-					"nl": "Het NO2 niveau is veranderd",
-					"de": "Der NO2-Gehalt hat sich geändert"
-				},
-				"args": [
-					{
-						"name": "monitor",
-						"type": "device",
-						"filter": "driver_id=openaq_monitor|waqi_monitor|lmn_monitor",
-						"placeholder": {
-							"en": "Which monitor",
-							"nl": "Welke meter"
-						}
-					}
-				],
-				"tokens": [
-					{
-						"name": "measure_no2",
-						"title": {
-							"en": "NO2"
-						},
-						"type": "number",
-						"example": 20
-					}
-				]
-			},
-			{
-				"id": "measure_o3_changed",
-				"title": {
-					"en": "The O3-level changed",
-					"nl": "Het O3 niveau is veranderd",
-					"de": "Der O3-Gehalt hat sich geändert"
-				},
-				"args": [
-					{
-						"name": "monitor",
-						"type": "device",
-						"filter": "driver_id=openaq_monitor|waqi_monitor|lmn_monitor",
-						"placeholder": {
-							"en": "Which monitor",
-							"nl": "Welke meter"
-						}
-					}
-				],
-				"tokens": [
-					{
-						"name": "measure_o3",
-						"title": {
-							"en": "O3"
-						},
-						"type": "number",
-						"example": 20
-					}
-				]
-			},
-			{
-				"id": "measure_bc_changed",
-				"title": {
-					"en": "The BC-level changed",
-					"nl": "Het BC niveau is veranderd",
-					"de": "Der BC-Gehalt hat sich geändert"
-				},
-				"args": [
-					{
-						"name": "monitor",
-						"type": "device",
-						"filter": "driver_id=openaq_monitor|lmn_monitor",
-						"placeholder": {
-							"en": "Which monitor",
-							"nl": "Welke meter"
-						}
-					}
-				],
-				"tokens": [
-					{
-						"name": "measure_bc",
-						"title": {
-							"en": "BC"
-						},
-						"type": "number",
-						"example": 20
-					}
-				]
-			}
-		]
-	}
+  "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
+  "id": "com.gruijter.openaq",
+  "version": "2.0.0",
+  "compatibility": ">=5.0.0",
+  "sdk": 3,
+  "brandColor": "#00aaff",
+  "name": {
+    "en": "Outdoor AirQuality"
+  },
+  "description": {
+    "en": "Outdoor Air quality monitor",
+    "nl": "Buitenluchtkwaliteit meter"
+  },
+  "tags": {
+    "en": [
+      "pm25",
+      "pm10",
+      "so2",
+      "sulfur dioxide",
+      "no2",
+      "nitrogen dioxide",
+      "o3",
+      "ozone",
+      "co",
+      "carbon monoxide",
+      "bc",
+      "black carbon",
+      "air quality",
+      "pollution",
+      "openAQ",
+      "Luftdaten",
+      "Luchtmeetnet"
+    ],
+    "nl": [
+      "pm25",
+      "pm10",
+      "so2",
+      "zwavel dioxide",
+      "no2",
+      "stikstof dioxide",
+      "o3",
+      "ozon",
+      "co",
+      "koolmonoxide",
+      "bc",
+      "roet",
+      "luchtkwaliteit",
+      "vervuiling",
+      "openAQ",
+      "Luftdaten",
+      "Luchtmeetnet"
+    ]
+  },
+  "category": [
+    "climate",
+    "internet",
+    "tools"
+  ],
+  "permissions": [
+    "homey:manager:geolocation"
+  ],
+  "images": {
+    "large": "/assets/images/large.png",
+    "small": "/assets/images/small.png"
+  },
+  "author": {
+    "name": "Robin Gruijter",
+    "email": "gruijter@hotmail.com"
+  },
+  "contributors": {
+    "developers": [
+      {
+        "name": "Robin de Gruijter",
+        "email": "gruijter@hotmail.com"
+      }
+    ],
+    "translators": [
+      {
+        "name": "🇬🇧 Robin"
+      },
+      {
+        "name": "🇳🇱 Robin"
+      }
+    ]
+  },
+  "copyright": "Robin de Gruijter (gruijter@hotmail.com)",
+  "license": " GPL-3.0-or-later",
+  "contributing": {
+    "donate": {
+      "paypal": {
+        "username": "gruijter"
+      }
+    }
+  },
+  "bugs": {
+    "url": "https://github.com/gruijter/com.gruijter.openaq/issues"
+  },
+  "homeyCommunityTopicId": 17548,
+  "api": {
+    "getLogs": {
+      "method": "get",
+      "path": "/getlogs"
+    },
+    "deleteLogs": {
+      "method": "get",
+      "path": "/deletelogs"
+    }
+  },
+  "flow": {
+    "triggers": [
+      {
+        "id": "measure_bc_changed",
+        "title": {
+          "en": "The BC-level changed",
+          "nl": "Het BC niveau is veranderd",
+          "de": "Der BC-Gehalt hat sich geändert"
+        },
+        "args": [
+          {
+            "name": "monitor",
+            "type": "device",
+            "filter": "driver_id=openaq_monitor|lmn_monitor",
+            "placeholder": {
+              "en": "Which monitor",
+              "nl": "Welke meter"
+            }
+          }
+        ],
+        "tokens": [
+          {
+            "name": "measure_bc",
+            "title": {
+              "en": "BC"
+            },
+            "type": "number",
+            "example": 20
+          }
+        ]
+      },
+      {
+        "id": "measure_no2_changed",
+        "title": {
+          "en": "The NO2-level changed",
+          "nl": "Het NO2 niveau is veranderd",
+          "de": "Der NO2-Gehalt hat sich geändert"
+        },
+        "args": [
+          {
+            "name": "monitor",
+            "type": "device",
+            "filter": "driver_id=openaq_monitor|waqi_monitor|lmn_monitor",
+            "placeholder": {
+              "en": "Which monitor",
+              "nl": "Welke meter"
+            }
+          }
+        ],
+        "tokens": [
+          {
+            "name": "measure_no2",
+            "title": {
+              "en": "NO2"
+            },
+            "type": "number",
+            "example": 20
+          }
+        ]
+      },
+      {
+        "id": "measure_o3_changed",
+        "title": {
+          "en": "The O3-level changed",
+          "nl": "Het O3 niveau is veranderd",
+          "de": "Der O3-Gehalt hat sich geändert"
+        },
+        "args": [
+          {
+            "name": "monitor",
+            "type": "device",
+            "filter": "driver_id=openaq_monitor|waqi_monitor|lmn_monitor",
+            "placeholder": {
+              "en": "Which monitor",
+              "nl": "Welke meter"
+            }
+          }
+        ],
+        "tokens": [
+          {
+            "name": "measure_o3",
+            "title": {
+              "en": "O3"
+            },
+            "type": "number",
+            "example": 20
+          }
+        ]
+      },
+      {
+        "id": "measure_pm10_changed",
+        "title": {
+          "en": "The PM10-level changed",
+          "nl": "Het PM10 niveau is veranderd",
+          "de": "Der PM10-Gehalt hat sich geändert"
+        },
+        "args": [
+          {
+            "name": "monitor",
+            "type": "device",
+            "filter": "driver_id=openaq_monitor|waqi_monitor|ld_monitor|lmn_monitor",
+            "placeholder": {
+              "en": "Which monitor",
+              "nl": "Welke meter"
+            }
+          }
+        ],
+        "tokens": [
+          {
+            "name": "measure_pm10",
+            "title": {
+              "en": "PM10"
+            },
+            "type": "number",
+            "example": 20
+          }
+        ]
+      },
+      {
+        "id": "measure_s02_changed",
+        "title": {
+          "en": "The SO2-level changed",
+          "nl": "Het SO2 niveau is veranderd",
+          "de": "Der SO2-Gehalt hat sich geändert"
+        },
+        "args": [
+          {
+            "name": "monitor",
+            "type": "device",
+            "filter": "driver_id=openaq_monitor|waqi_monitor|lmn_monitor",
+            "placeholder": {
+              "en": "Which monitor",
+              "nl": "Welke meter"
+            }
+          }
+        ],
+        "tokens": [
+          {
+            "name": "measure_so2",
+            "title": {
+              "en": "SO2"
+            },
+            "type": "number",
+            "example": 20
+          }
+        ]
+      }
+    ]
+  },
+  "drivers": [
+    {
+      "name": {
+        "en": "Luftdaten Monitor",
+        "nl": "Luftdaten Meter"
+      },
+      "images": {
+        "large": "drivers/ld_monitor/assets/images/large.jpg",
+        "small": "drivers/ld_monitor/assets/images/small.jpg"
+      },
+      "class": "sensor",
+      "capabilities": [
+        "measure_pm25",
+        "measure_pm10",
+        "measure_temperature",
+        "measure_pressure",
+        "measure_humidity"
+      ],
+      "pair": [
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
+          },
+          "options": {
+            "singular": true
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        }
+      ],
+      "settings": [
+        {
+          "type": "group",
+          "label": {
+            "en": "Monitor settings",
+            "nl": "Meter instellingen"
+          },
+          "children": [
+            {
+              "id": "lat",
+              "type": "number",
+              "label": {
+                "en": "Latitude",
+                "nl": "Breedtegraad"
+              },
+              "hint": {
+                "en": "The latitude of the monitor.",
+                "nl": "De breedtegraad van de monitor."
+              },
+              "value": 52.228936
+            },
+            {
+              "id": "lon",
+              "type": "number",
+              "label": {
+                "en": "Longitude",
+                "nl": "Lengtegraad"
+              },
+              "hint": {
+                "en": "The longitude of the monitor.",
+                "nl": "De lengtegraad van de monitor."
+              },
+              "value": 5.321492
+            },
+            {
+              "id": "dst",
+              "type": "number",
+              "label": {
+                "en": "Max. range (km)",
+                "nl": "Max. afstand (km)"
+              },
+              "hint": {
+                "en": "The maximum distance used to find online data.",
+                "nl": "De maximale afstand om online gegevens te vinden."
+              },
+              "attr": {
+                "min": 0,
+                "max": 250
+              },
+              "value": 100
+            },
+            {
+              "id": "include_indoor",
+              "type": "checkbox",
+              "label": {
+                "en": "Include indoor stations",
+                "nl": "Inclusief binnenstations"
+              },
+              "hint": {
+                "en": "Include indoor stations to find online data.",
+                "nl": "Betrek binnenstations om online gegevens te vinden."
+              },
+              "value": false
+            },
+            {
+              "id": "pollingInterval",
+              "type": "number",
+              "label": {
+                "en": "Scan interval (minutes)",
+                "nl": "Scan interval (minuten)"
+              },
+              "attr": {
+                "min": 1
+              },
+              "value": 10
+            }
+          ]
+        },
+        {
+          "type": "group",
+          "label": {
+            "en": "Service information",
+            "nl": "Dienst informatie"
+          },
+          "children": [
+            {
+              "id": "station_loc",
+              "type": "label",
+              "label": {
+                "en": "Station location",
+                "nl": "Station locatie"
+              },
+              "hint": {
+                "en": "Location of closest station used to find online data.",
+                "nl": "Locatie van dichtsbijzijnde station om online gegevens te vinden."
+              },
+              "value": ""
+            },
+            {
+              "id": "station_dst",
+              "type": "label",
+              "label": {
+                "en": "Station distance (m)",
+                "nl": "Afstand tot station (m)"
+              },
+              "hint": {
+                "en": "Distance to closest station used to find online data.",
+                "nl": "Afstand tot dichtsbijzijnde station om online gegevens te vinden."
+              },
+              "value": ""
+            }
+          ]
+        }
+      ],
+      "id": "ld_monitor"
+    },
+    {
+      "deprecated": true,
+      "name": {
+        "en": "LMN (NL) Monitor",
+        "nl": "LMN (NL) Meter"
+      },
+      "images": {
+        "large": "drivers/lmn_monitor/assets/images/large.jpg",
+        "small": "drivers/lmn_monitor/assets/images/small.jpg"
+      },
+      "class": "sensor",
+      "capabilities": [
+        "measure_pm25",
+        "measure_pm10",
+        "measure_so2",
+        "measure_no2",
+        "measure_o3",
+        "measure_co",
+        "measure_bc"
+      ],
+      "capabilitiesOptions": {
+        "measure_pm25": {
+          "units": {
+            "en": "µg/m³"
+          }
+        },
+        "measure_co": {
+          "units": {
+            "en": "µg/m³"
+          }
+        }
+      },
+      "pair": [
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
+          },
+          "options": {
+            "singular": true
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        }
+      ],
+      "settings": [
+        {
+          "type": "group",
+          "label": {
+            "en": "Monitor settings",
+            "nl": "Meter instellingen"
+          },
+          "children": [
+            {
+              "id": "lat",
+              "type": "number",
+              "label": {
+                "en": "Latitude",
+                "nl": "Breedtegraad"
+              },
+              "hint": {
+                "en": "The latitude of the monitor.",
+                "nl": "De breedtegraad van de monitor."
+              },
+              "value": 52.228936
+            },
+            {
+              "id": "lon",
+              "type": "number",
+              "label": {
+                "en": "Longitude",
+                "nl": "Lengtegraad"
+              },
+              "hint": {
+                "en": "The longitude of the monitor.",
+                "nl": "De lengtegraad van de monitor."
+              },
+              "value": 5.321492
+            },
+            {
+              "id": "pollingInterval",
+              "type": "number",
+              "label": {
+                "en": "Scan interval (minutes)",
+                "nl": "Scan interval (minuten)"
+              },
+              "attr": {
+                "min": 5
+              },
+              "value": 10
+            }
+          ]
+        },
+        {
+          "type": "group",
+          "label": {
+            "en": "Service information",
+            "nl": "Dienst informatie"
+          },
+          "children": [
+            {
+              "id": "station_loc",
+              "type": "label",
+              "label": {
+                "en": "Station location",
+                "nl": "Station locatie"
+              },
+              "hint": {
+                "en": "Location of closest station used to find online data.",
+                "nl": "Locatie van dichtsbijzijnde station om online gegevens te vinden."
+              },
+              "value": ""
+            },
+            {
+              "id": "station_dst",
+              "type": "label",
+              "label": {
+                "en": "Station distance (m)",
+                "nl": "Afstand tot station (m)"
+              },
+              "hint": {
+                "en": "Distance to closest station used to find online data.",
+                "nl": "Afstand tot dichtsbijzijnde station om online gegevens te vinden."
+              },
+              "value": ""
+            }
+          ]
+        }
+      ],
+      "id": "lmn_monitor"
+    },
+    {
+      "name": {
+        "en": "OpenAQ Monitor",
+        "nl": "OpenAQ Meter"
+      },
+      "images": {
+        "large": "drivers/openaq_monitor/assets/images/large.jpg",
+        "small": "drivers/openaq_monitor/assets/images/small.jpg"
+      },
+      "class": "sensor",
+      "capabilities": [
+        "measure_pm25",
+        "measure_pm10",
+        "measure_so2",
+        "measure_no2",
+        "measure_o3",
+        "measure_co",
+        "measure_bc"
+      ],
+      "capabilitiesOptions": {
+        "measure_pm25": {
+          "units": {
+            "en": "µg/m³"
+          }
+        },
+        "measure_co": {
+          "units": {
+            "en": "µg/m³"
+          }
+        }
+      },
+      "pair": [
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
+          },
+          "options": {
+            "singular": true
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        }
+      ],
+      "settings": [
+        {
+          "type": "group",
+          "label": {
+            "en": "Monitor settings",
+            "nl": "Meter instellingen"
+          },
+          "children": [
+            {
+              "id": "lat",
+              "type": "number",
+              "label": {
+                "en": "Latitude",
+                "nl": "Breedtegraad"
+              },
+              "hint": {
+                "en": "The latitude of the monitor.",
+                "nl": "De breedtegraad van de monitor."
+              },
+              "value": 52.228936
+            },
+            {
+              "id": "lon",
+              "type": "number",
+              "label": {
+                "en": "Longitude",
+                "nl": "Lengtegraad"
+              },
+              "hint": {
+                "en": "The longitude of the monitor.",
+                "nl": "De lengtegraad van de monitor."
+              },
+              "value": 5.321492
+            },
+            {
+              "id": "dst",
+              "type": "number",
+              "label": {
+                "en": "Max. range (km)",
+                "nl": "Max. afstand (km)"
+              },
+              "hint": {
+                "en": "The maximum distance used to find online data.",
+                "nl": "De maximale afstand om online gegevens te vinden."
+              },
+              "attr": {
+                "min": 0,
+                "max": 250
+              },
+              "value": 100
+            },
+            {
+              "id": "pollingInterval",
+              "type": "number",
+              "label": {
+                "en": "Scan interval (minutes)",
+                "nl": "Scan interval (minuten)"
+              },
+              "attr": {
+                "min": 5
+              },
+              "value": 10
+            }
+          ]
+        },
+        {
+          "type": "group",
+          "label": {
+            "en": "Service information",
+            "nl": "Dienst informatie"
+          },
+          "children": [
+            {
+              "id": "station_loc",
+              "type": "label",
+              "label": {
+                "en": "Station location",
+                "nl": "Station locatie"
+              },
+              "hint": {
+                "en": "Location of closest station used to find online data.",
+                "nl": "Locatie van dichtsbijzijnde station om online gegevens te vinden."
+              },
+              "value": ""
+            },
+            {
+              "id": "station_dst",
+              "type": "label",
+              "label": {
+                "en": "Station distance (m)",
+                "nl": "Afstand tot station (m)"
+              },
+              "hint": {
+                "en": "Distance to closest station used to find online data.",
+                "nl": "Afstand tot dichtsbijzijnde station om online gegevens te vinden."
+              },
+              "value": ""
+            }
+          ]
+        }
+      ],
+      "id": "openaq_monitor"
+    },
+    {
+      "name": {
+        "en": "WAQI Monitor",
+        "nl": "WAQI Meter"
+      },
+      "images": {
+        "large": "drivers/waqi_monitor/assets/images/large.jpg",
+        "small": "drivers/waqi_monitor/assets/images/small.jpg"
+      },
+      "class": "sensor",
+      "capabilities": [
+        "measure_pm25",
+        "measure_pm10",
+        "measure_so2",
+        "measure_no2",
+        "measure_o3",
+        "measure_co"
+      ],
+      "capabilitiesOptions": {
+        "measure_pm25": {
+          "units": {
+            "en": "µg/m³"
+          }
+        },
+        "measure_co": {
+          "units": {
+            "en": "µg/m³"
+          }
+        }
+      },
+      "pair": [
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
+          },
+          "options": {
+            "singular": true
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        }
+      ],
+      "settings": [
+        {
+          "type": "group",
+          "label": {
+            "en": "Monitor settings",
+            "nl": "Meter instellingen"
+          },
+          "children": [
+            {
+              "id": "api_key",
+              "type": "password",
+              "label": {
+                "en": "API Key",
+                "nl": "API Sleutel"
+              },
+              "hint": {
+                "en": "Get a free API key from AQICN.org. Leave empty to use built-in Homey key.",
+                "nl": "Haal een gratis API sleutel bij AQICN.org. Leeg laten om de ingebouwde Homey sleutel te gebruiken."
+              },
+              "value": "demo"
+            },
+            {
+              "id": "lat",
+              "type": "number",
+              "label": {
+                "en": "Latitude",
+                "nl": "Breedtegraad"
+              },
+              "hint": {
+                "en": "The latitude of the monitor.",
+                "nl": "De breedtegraad van de monitor."
+              },
+              "value": 52.228936
+            },
+            {
+              "id": "lon",
+              "type": "number",
+              "label": {
+                "en": "Longitude",
+                "nl": "Lengtegraad"
+              },
+              "hint": {
+                "en": "The longitude of the monitor.",
+                "nl": "De lengtegraad van de monitor."
+              },
+              "value": 5.321492
+            },
+            {
+              "id": "pollingInterval",
+              "type": "number",
+              "label": {
+                "en": "Scan interval (minutes)",
+                "nl": "Scan interval (minuten)"
+              },
+              "attr": {
+                "min": 5
+              },
+              "value": 10
+            }
+          ]
+        },
+        {
+          "type": "group",
+          "label": {
+            "en": "Service information",
+            "nl": "Dienst informatie"
+          },
+          "children": [
+            {
+              "id": "station_loc",
+              "type": "label",
+              "label": {
+                "en": "Station location",
+                "nl": "Station locatie"
+              },
+              "hint": {
+                "en": "Location of closest station used to find online data.",
+                "nl": "Locatie van dichtsbijzijnde station om online gegevens te vinden."
+              },
+              "value": ""
+            },
+            {
+              "id": "station_dst",
+              "type": "label",
+              "label": {
+                "en": "Station distance (m)",
+                "nl": "Afstand tot station (m)"
+              },
+              "hint": {
+                "en": "Distance to closest station used to find online data.",
+                "nl": "Afstand tot dichtsbijzijnde station om online gegevens te vinden."
+              },
+              "value": ""
+            }
+          ]
+        }
+      ],
+      "id": "waqi_monitor"
+    }
+  ],
+  "capabilities": {
+    "measure_bc": {
+      "type": "number",
+      "title": {
+        "en": "BC"
+      },
+      "units": {
+        "en": "µg/m³"
+      },
+      "insights": true,
+      "desc": {
+        "en": "BC - black carbon (μg/m3)"
+      },
+      "decimals": 2,
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "icon": "./assets/measure_bc.svg"
+    },
+    "measure_no2": {
+      "type": "number",
+      "title": {
+        "en": "NO2"
+      },
+      "units": {
+        "en": "µg/m³"
+      },
+      "insights": true,
+      "desc": {
+        "en": "NO2 - nitrogen dioxide (μg/m3)"
+      },
+      "decimals": 2,
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "icon": "./assets/measure_no2.svg"
+    },
+    "measure_o3": {
+      "type": "number",
+      "title": {
+        "en": "O3"
+      },
+      "units": {
+        "en": "µg/m³"
+      },
+      "insights": true,
+      "desc": {
+        "en": "O3 - ozone (μg/m3)"
+      },
+      "decimals": 2,
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "icon": "./assets/measure_o3.svg"
+    },
+    "measure_pm10": {
+      "type": "number",
+      "title": {
+        "en": "PM10"
+      },
+      "units": {
+        "en": "µg/m³"
+      },
+      "insights": true,
+      "desc": {
+        "en": "Atmospheric Particulate Matter (μg/m3)",
+        "nl": "Deeltjesvormige luchtverontreiniging (μg/m3)",
+        "de": "Atmosphärischer Feinstaub (μg/m3)"
+      },
+      "decimals": 2,
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "icon": "./assets/measure_pm10.svg"
+    },
+    "measure_so2": {
+      "type": "number",
+      "title": {
+        "en": "SO2"
+      },
+      "units": {
+        "en": "µg/m³"
+      },
+      "insights": true,
+      "desc": {
+        "en": "SO2 - sulfur dioxide (μg/m3)"
+      },
+      "decimals": 2,
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "icon": "./assets/measure_so2.svg"
+    }
+  }
 }

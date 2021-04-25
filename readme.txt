@@ -10,6 +10,9 @@ select, the following parameters are provided:
 * NO2 (nitrogen dioxide)
 * CO (carbon monoxide)
 * BC (black carbon, only available with LuchtmeetnetNL and OpenAQ in certain countries)
+* Temperature (only available with Luftdaten)
+* Pressure (only available with Luftdaten)
+* Humidity (only available with Luftdaten)
 
 This app uses:
 * OpenAQ API for data retrieval. See license information here: https://docs.openaq.org/

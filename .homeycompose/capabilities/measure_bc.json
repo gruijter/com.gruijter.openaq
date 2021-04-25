@@ -1,0 +1,18 @@
+{
+  "type": "number",
+  "title": {
+    "en": "BC"
+  },
+  "units": {
+    "en": "µg/m³"
+  },
+  "insights": true,
+  "desc": {
+    "en": "BC - black carbon (μg/m3)"
+  },
+  "decimals": 2,
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor",
+  "icon": "./assets/measure_bc.svg"
+}

@@ -55,7 +55,7 @@ class GenericAQMonitorDevice extends Homey.Device {
 	}
 
 	// this method is called when the user has changed the device's settings in Homey.
-	onSettings(newSettingsObj, oldSettingsObj, changedKeysArr, callback) {
+	onSettings() {
 		// first stop polling the device, then start init after short delay
 		clearInterval(this.intervalIdDevicePoll);
 		this.log(`${this.getData().id} ${this.getName()} device settings changed`);
@@ -64,7 +64,6 @@ class GenericAQMonitorDevice extends Homey.Device {
 		setTimeout(() => {
 			this.onInit();
 		}, 10000);
-		callback(null, true);
 	}
 
 	setCapability(capability, value) {
@@ -85,7 +84,7 @@ class GenericAQMonitorDevice extends Homey.Device {
 					throw error;
 				});
 			const capabilities = this.getCapabilities();
-			// ['measure_pm25', 'measure_pm10', 'measure_so2', 'measure_no2', 'measure_o3', 'measure_co', 'measure_bc']
+			// ['measure_pm25', 'measure_pm10', 'measure_so2', 'measure_no2', 'measure_o3', 'measure_co', 'measure_bc', 'measure_temperature', 'measure_pressure']
 			const values = [];
 			capabilities.forEach((capability) => {
 				values.push(this.driver.getValue(device, rawData, capability.replace('measure_', '')));

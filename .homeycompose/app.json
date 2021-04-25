@@ -1,0 +1,109 @@
+{
+  "id": "com.gruijter.openaq",
+  "version": "2.0.0",
+  "compatibility": ">=5.0.0",
+  "sdk": 3,
+  "brandColor": "#00aaff",
+  "name": {
+    "en": "Outdoor AirQuality"
+  },
+  "description": {
+    "en": "Outdoor Air quality monitor",
+    "nl": "Buitenluchtkwaliteit meter"
+  },
+  "tags": {
+    "en": [
+      "pm25",
+      "pm10",
+      "so2",
+      "sulfur dioxide",
+      "no2",
+      "nitrogen dioxide",
+      "o3",
+      "ozone",
+      "co",
+      "carbon monoxide",
+      "bc",
+      "black carbon",
+      "air quality",
+      "pollution",
+      "openAQ",
+      "Luftdaten",
+      "Luchtmeetnet"
+    ],
+    "nl": [
+      "pm25",
+      "pm10",
+      "so2",
+      "zwavel dioxide",
+      "no2",
+      "stikstof dioxide",
+      "o3",
+      "ozon",
+      "co",
+      "koolmonoxide",
+      "bc",
+      "roet",
+      "luchtkwaliteit",
+      "vervuiling",
+      "openAQ",
+      "Luftdaten",
+      "Luchtmeetnet"
+    ]
+  },
+  "category": [
+    "climate",
+    "internet",
+    "tools"
+  ],
+  "permissions": [
+    "homey:manager:geolocation"
+  ],
+  "images": {
+    "large": "/assets/images/large.png",
+    "small": "/assets/images/small.png"
+  },
+  "author": {
+    "name": "Robin Gruijter",
+    "email": "gruijter@hotmail.com"
+  },
+  "contributors": {
+    "developers": [
+      {
+        "name": "Robin de Gruijter",
+        "email": "gruijter@hotmail.com"
+      }
+    ],
+    "translators": [
+      {
+        "name": "🇬🇧 Robin"
+      },
+      {
+        "name": "🇳🇱 Robin"
+      }
+    ]
+  },
+  "copyright": "Robin de Gruijter (gruijter@hotmail.com)",
+  "license": " GPL-3.0-or-later",
+  "contributing": {
+    "donate": {
+      "paypal": {
+        "username": "gruijter"
+      }
+    }
+  },
+  "bugs": {
+    "url": "https://github.com/gruijter/com.gruijter.openaq/issues"
+  },
+  "homeyCommunityTopicId": 17548,
+  "api": {
+    "getLogs": {
+      "method": "get",
+      "path": "/getlogs"
+    },
+    "deleteLogs": {
+      "method": "get",
+      "path": "/deletelogs"
+    }
+  }
+}

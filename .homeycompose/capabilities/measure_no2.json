@@ -1,0 +1,18 @@
+{
+  "type": "number",
+  "title": {
+    "en": "NO2"
+  },
+  "units": {
+    "en": "µg/m³"
+  },
+  "insights": true,
+  "desc": {
+    "en": "NO2 - nitrogen dioxide (μg/m3)"
+  },
+  "decimals": 2,
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor",
+  "icon": "./assets/measure_no2.svg"
+}

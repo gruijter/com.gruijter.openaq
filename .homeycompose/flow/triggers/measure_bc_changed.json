@@ -1,0 +1,29 @@
+{
+  "id": "measure_bc_changed",
+  "title": {
+    "en": "The BC-level changed",
+    "nl": "Het BC niveau is veranderd",
+    "de": "Der BC-Gehalt hat sich geändert"
+  },
+  "args": [
+    {
+      "name": "monitor",
+      "type": "device",
+      "filter": "driver_id=openaq_monitor|lmn_monitor",
+      "placeholder": {
+        "en": "Which monitor",
+        "nl": "Welke meter"
+      }
+    }
+  ],
+  "tokens": [
+    {
+      "name": "measure_bc",
+      "title": {
+        "en": "BC"
+      },
+      "type": "number",
+      "example": 20
+    }
+  ]
+}

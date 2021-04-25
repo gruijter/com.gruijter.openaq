@@ -1,0 +1,18 @@
+{
+  "type": "number",
+  "title": {
+    "en": "O3"
+  },
+  "units": {
+    "en": "µg/m³"
+  },
+  "insights": true,
+  "desc": {
+    "en": "O3 - ozone (μg/m3)"
+  },
+  "decimals": 2,
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor",
+  "icon": "./assets/measure_o3.svg"
+}

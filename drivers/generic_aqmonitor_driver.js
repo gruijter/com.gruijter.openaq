@@ -1,4 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable class-methods-use-this */
 /*
 Copyright 2019 - 2021, Robin de Gruijter (gruijter@hotmail.com)
@@ -30,7 +29,7 @@ const randomID = () => `AQMonitor_${crypto.randomBytes(3).toString('hex')}`; // 
 
 class GenericAQMonitorDriver extends Homey.Driver {
 
-	async onPairListDevices(data, callback) {
+	async onPairListDevices() {
 		this.log('pairing started by user');
 		try {
 			const devices = [];
@@ -49,7 +48,7 @@ class GenericAQMonitorDriver extends Homey.Driver {
 						api_key: this.ds.apiKey,
 						lat: set.lat || Math.round(this.homey.geolocation.getLatitude() * 100000000) / 100000000,
 						lon: set.lon || Math.round(this.homey.geolocation.getLongitude() * 100000000) / 100000000,
-						dst: set.dst || 100, //	Radius in kilometres,
+						dst: set.dst, //	Radius in kilometres,
 						include_indoor: set.includeIndoor || false,
 						pollingInterval: set.pollingInterval || 10, // minutes
 						station_loc: set.stationLoc || 'unknown', // location description
@@ -59,10 +58,10 @@ class GenericAQMonitorDriver extends Homey.Driver {
 				};
 				devices.push(device);
 			});
-			callback(null, devices);
+			return Promise.all(devices);
 		} catch (error) {
 			this.error(error);
-			callback(error);
+			return Promise.reject(error);
 		}
 	}
 
@@ -82,24 +81,6 @@ class GenericAQMonitorDriver extends Homey.Driver {
 			lomax: bounds[1]._degLon,
 		};
 	}
-
-	// _makeHttpsRequest(options) {
-	// 	return new Promise((resolve, reject) => {
-	// 		const req = https.request(options, (res) => {
-	// 			let resBody = '';
-	// 			res.on('data', (chunk) => {
-	// 				resBody += chunk;
-	// 			});
-	// 			res.once('end', () => {
-	// 				res.body = resBody;
-	// 				return resolve(res); // resolve the request
-	// 			});
-	// 		});
-	// 		req.setTimeout(this.timeout || 30000, () => req.abort());
-	// 		req.once('error', (e) => reject(e));
-	// 		req.end();
-	// 	});
-	// }
 
 	_makeHttpsRequest(options, postData, timeout) {
 		return new Promise((resolve, reject) => {

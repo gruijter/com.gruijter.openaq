@@ -1,0 +1,29 @@
+{
+  "id": "measure_s02_changed",
+  "title": {
+    "en": "The SO2-level changed",
+    "nl": "Het SO2 niveau is veranderd",
+    "de": "Der SO2-Gehalt hat sich geändert"
+  },
+  "args": [
+    {
+      "name": "monitor",
+      "type": "device",
+      "filter": "driver_id=openaq_monitor|waqi_monitor|lmn_monitor",
+      "placeholder": {
+        "en": "Which monitor",
+        "nl": "Welke meter"
+      }
+    }
+  ],
+  "tokens": [
+    {
+      "name": "measure_so2",
+      "title": {
+        "en": "SO2"
+      },
+      "type": "number",
+      "example": 20
+    }
+  ]
+}

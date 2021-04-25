@@ -1,0 +1,29 @@
+{
+  "id": "measure_pm10_changed",
+  "title": {
+    "en": "The PM10-level changed",
+    "nl": "Het PM10 niveau is veranderd",
+    "de": "Der PM10-Gehalt hat sich geändert"
+  },
+  "args": [
+    {
+      "name": "monitor",
+      "type": "device",
+      "filter": "driver_id=openaq_monitor|waqi_monitor|ld_monitor|lmn_monitor",
+      "placeholder": {
+        "en": "Which monitor",
+        "nl": "Welke meter"
+      }
+    }
+  ],
+  "tokens": [
+    {
+      "name": "measure_pm10",
+      "title": {
+        "en": "PM10"
+      },
+      "type": "number",
+      "example": 20
+    }
+  ]
+}
