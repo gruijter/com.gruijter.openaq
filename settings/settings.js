@@ -25,7 +25,7 @@ function updateLogs() {
 						}
 						let logLine = line
 							.replace(' [MyApp]', '')
-							.replace(' [ManagerDrivers]', '')
+							.replace(' [ManagerDrivers]', '');
 							// .replace(' [ts_ft002]', '');
 
 						// find location string and replace with clickable link
