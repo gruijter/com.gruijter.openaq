@@ -140,5 +140,11 @@
         }
       ]
     }
+  ],
+  "connectivity": [
+    "cloud"
+  ],
+  "platforms": [
+    "local"
   ]
 }

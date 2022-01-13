@@ -1,5 +1,5 @@
 /*
-Copyright 2019 - 2021, Robin de Gruijter (gruijter@hotmail.com)
+Copyright 2019 - 2022, Robin de Gruijter (gruijter@hotmail.com)
 
 This file is part of com.gruijter.openaq.
 
@@ -92,11 +92,13 @@ class GenericAQMonitorDevice extends Homey.Device {
 			this.log(values);
 			values.forEach((value) => {
 				this.setCapability(`measure_${value.parameter}`, value.value);
-				if (value.distance) {
-					this.setSettings({ station_dst: value.distance.toString() });
-				}
-				if (value.location) {
-					this.setSettings({ station_loc: value.location });
+				if (value.parameter === 'pm25') {
+					if (value.distance && value.parameter) {
+						this.setSettings({ station_dst: value.distance.toString() });
+					}
+					if (value.location) {
+						this.setSettings({ station_loc: value.location });
+					}
 				}
 			});
 		} catch (error) {

@@ -16,6 +16,7 @@ select, the following parameters are provided:
 * Temperature (only available with Luftdaten)
 * Pressure (only available with Luftdaten)
 * Humidity (only available with Luftdaten)
+* Noise (only available with Luftdaten)
 
 ![image][mobile-device-image]
 
@@ -91,7 +92,7 @@ If you really like the app you can buy me a beer.
 
 This app uses:
 * OpenAQ API for data retrieval. See license information here: https://docs.openaq.org/
-* Luftdaten API for data retrieval: https://luftdaten.info/en/home-en/
+* Luftdaten API for data retrieval: https://sensor.community/en/
 * World Air Quality Index (WAQI) API for data retrieval: http://waqi.info/
 * Data provided by the world's Environmental Protection Agencies: http://aqicn.org/sources/
 

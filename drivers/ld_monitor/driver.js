@@ -1,5 +1,5 @@
 /*
-Copyright 2019 - 2020, Robin de Gruijter (gruijter@hotmail.com)
+Copyright 2019 - 2022, Robin de Gruijter (gruijter@hotmail.com)
 
 This file is part of com.gruijter.openaq.
 
@@ -29,14 +29,15 @@ const driverSpecifics = {
 };
 
 const searchStrings = {
-	pm25: 'P1',
-	pm10: 'P2',
+	pm25: 'P2',
+	pm10: 'P1',
 	temperature: 'temperature',
 	pressure: 'pressure',
 	humidity: 'humidity',
+	noise: 'noise_LAeq', // (dBA)
 };
 
-const capabilities = ['measure_pm25', 'measure_pm10', 'measure_temperature', 'measure_pressure', 'measure_humidity'];
+const capabilities = ['measure_pm25', 'measure_pm10', 'measure_temperature', 'measure_pressure', 'measure_humidity', 'measure_noise'];
 
 // add service specific properties and functions
 class LDMonitorDriver extends GenericAQMonitorDriver {
@@ -183,6 +184,7 @@ website: https://sensor.community/
 LD station database: https://public.opendatasoft.com/explore/dataset/api-luftdateninfo/
 
 api info: https://luftdaten.info/faq/#toggle-id-8
+GitHub api info: https://github.com/opendata-stuttgart/meta/wiki/APIs
 
 Wir stellen die Daten der Sensoren als JSON-Dateien bereit, die jede Minute aktualisiert werden.
 Alle Sensorenwerte der letzten 5 Minuten -> http://api.luftdaten.info/static/v1/data.json
