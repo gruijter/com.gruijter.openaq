@@ -22,7 +22,7 @@ along with com.gruijter.openaq.  If not, see <http://www.gnu.org/licenses/>.
 
 // const util = require('util');
 const querystring = require('querystring');
-const GenericAQMonitorDriver = require('../generic_aqmonitor_driver.js');
+const GenericAQMonitorDriver = require('../generic_aqmonitor_driver');
 
 const driverSpecifics = {
 	service: 'LuchtmeetnetNL',

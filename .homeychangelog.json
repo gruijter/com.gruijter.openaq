@@ -13,5 +13,8 @@
   },
   "2.1.0": {
     "en": "Fix Luftdaten PM10/PM2.5 values switched. Added LD noise. Location of @Homey stattion based on PM2.5. Added Dutch readme."
+  },
+  "2.2.0": {
+    "en": "Fix Luftdaten API change."
   }
 }

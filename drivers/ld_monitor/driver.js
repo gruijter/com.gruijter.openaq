@@ -20,7 +20,7 @@ along with com.gruijter.openaq.  If not, see <http://www.gnu.org/licenses/>.
 'use strict';
 
 // const util = require('util');
-const GenericAQMonitorDriver = require('../generic_aqmonitor_driver.js');
+const GenericAQMonitorDriver = require('../generic_aqmonitor_driver');
 
 // service specific properties
 const driverSpecifics = {
@@ -57,6 +57,7 @@ class LDMonitorDriver extends GenericAQMonitorDriver {
 					path: `/airrohr/v1/filter/area=${settings.lat},${settings.lon},${dst}`,
 					headers: {
 						'Content-Length': 0,
+						'User-Agent': 'homey',
 					},
 					method: 'GET',
 				};

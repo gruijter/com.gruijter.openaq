@@ -20,7 +20,7 @@ along with com.gruijter.openaq.  If not, see <http://www.gnu.org/licenses/>.
 'use strict';
 
 // const util = require('util');
-const GenericAQMonitorDriver = require('../generic_aqmonitor_driver.js');
+const GenericAQMonitorDriver = require('../generic_aqmonitor_driver');
 
 const driverSpecifics = {
 	service: 'OpenAQ',

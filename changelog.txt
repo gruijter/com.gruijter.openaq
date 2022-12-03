@@ -1,5 +1,6 @@
 Version changelog
 
+v2.2.0  2022.12.03 Fix Luftdaten API change.
 v2.1.0  2022.01.13 Fix Luftdaten PM10/PM2.5 values switched. Added LD noise. Location of @Homey stattion based on PM2.5. Added Dutch readme.
 v2.0.0  2021.04.25 Rewrite to SDK3 and Homey compose. Fix HTTP(S) timeout. Added luftdaten temperature, pressure, humidity.
 v1.3.2  2021.02.28 Fixed OpenAQ (API updated to V2).

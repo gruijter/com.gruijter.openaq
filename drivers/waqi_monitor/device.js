@@ -19,7 +19,7 @@ along with com.gruijter.openaq.  If not, see <http://www.gnu.org/licenses/>.
 
 'use strict';
 
-const GenericAQMonitorDevice = require('../generic_aqmonitor_device.js');
+const GenericAQMonitorDevice = require('../generic_aqmonitor_device');
 
 class WAQIMonitorDevice extends GenericAQMonitorDevice {
 
