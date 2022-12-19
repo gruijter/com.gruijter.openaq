@@ -16,5 +16,8 @@
   },
   "2.2.0": {
     "en": "Fix Luftdaten API change."
+  },
+  "2.2.1": {
+    "en": "Fix Luftdaten another API change."
   }
 }

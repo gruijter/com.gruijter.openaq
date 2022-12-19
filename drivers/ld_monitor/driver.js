@@ -57,7 +57,7 @@ class LDMonitorDriver extends GenericAQMonitorDriver {
 					path: `/airrohr/v1/filter/area=${settings.lat},${settings.lon},${dst}`,
 					headers: {
 						'Content-Length': 0,
-						'User-Agent': 'homey',
+						'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36',
 					},
 					method: 'GET',
 				};
@@ -181,6 +181,8 @@ class LDMonitorDriver extends GenericAQMonitorDriver {
 module.exports = LDMonitorDriver;
 
 /*
+12_2022 API info: https://github.com/opendata-stuttgart/meta/wiki/APIs
+
 website: https://sensor.community/
 LD station database: https://public.opendatasoft.com/explore/dataset/api-luftdateninfo/
 
