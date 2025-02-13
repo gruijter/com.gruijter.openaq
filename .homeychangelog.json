@@ -22,5 +22,8 @@
   },
   "2.2.2": {
     "en": "Fix Luftdaten yet another API change. Removed LD@homey device during pair."
+  },
+  "2.3.0": {
+    "en": "Fix Luftdaten yet another API change."
   }
 }

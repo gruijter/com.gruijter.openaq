@@ -1,5 +1,5 @@
 /*
-Copyright 2019 - 2022, Robin de Gruijter (gruijter@hotmail.com)
+Copyright 2019 - 2025, Robin de Gruijter (gruijter@hotmail.com)
 
 This file is part of com.gruijter.openaq.
 
@@ -23,10 +23,10 @@ const GenericAQMonitorDevice = require('../generic_aqmonitor_device');
 
 class WAQIMonitorDevice extends GenericAQMonitorDevice {
 
-	onInit() {
-		// start the generic device
-		this.onInitDevice();
-	}
+  onInit() {
+    // start the generic device
+    this.onInitDevice();
+  }
 
 }
 

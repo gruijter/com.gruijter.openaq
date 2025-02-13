@@ -1,5 +1,5 @@
 /*
-Copyright 2019 - 2022, Robin de Gruijter (gruijter@hotmail.com)
+Copyright 2019 - 2025, Robin de Gruijter (gruijter@hotmail.com)
 
 This file is part of com.gruijter.openaq.
 
@@ -20,45 +20,45 @@ along with com.gruijter.openaq.  If not, see <http://www.gnu.org/licenses/>.
 'use strict';
 
 const Homey = require('homey');
-const Logger = require('./captureLogs.js');
+const Logger = require('./captureLogs');
 
 class App extends Homey.App {
 
-	onInit() {
-		process.env.LOG_LEVEL = 'info'; // info or debug
-		if (!this.logger) this.logger = new Logger({ name: 'log', length: 200, homey: this.homey });
-		this.log('OpenAQ app is running!');
+  onInit() {
+    process.env.LOG_LEVEL = 'info'; // info or debug
+    if (!this.logger) this.logger = new Logger({ name: 'log', length: 200, homey: this.homey });
+    this.log('OpenAQ app is running!');
 
-		// register some listeners
-		process.on('unhandledRejection', (error) => {
-			this.error('unhandledRejection! ', error);
-		});
-		process.on('uncaughtException', (error) => {
-			this.error('uncaughtException! ', error);
-		});
-		this.homey
-			.on('unload', () => {
-				this.log('app unload called');
-				// save logs to persistant storage
-				this.logger.saveLogs();
-			})
-			.on('memwarn', () => {
-				this.log('memwarn!');
-			});
-		// do garbage collection every 10 minutes
-		// this.intervalIdGc = setInterval(() => {
-		// 	global.gc();
-		// }, 1000 * 60 * 10);
-	}
+    // register some listeners
+    process.on('unhandledRejection', (error) => {
+      this.error('unhandledRejection! ', error);
+    });
+    process.on('uncaughtException', (error) => {
+      this.error('uncaughtException! ', error);
+    });
+    this.homey
+      .on('unload', () => {
+        this.log('app unload called');
+        // save logs to persistant storage
+        this.logger.saveLogs();
+      })
+      .on('memwarn', () => {
+        this.log('memwarn!');
+      });
+    // do garbage collection every 10 minutes
+    // this.intervalIdGc = setInterval(() => {
+    //  global.gc();
+    // }, 1000 * 60 * 10);
+  }
 
-	//  stuff for frontend API
-	deleteLogs() {
-		return this.logger.deleteLogs();
-	}
+  //  stuff for frontend API
+  deleteLogs() {
+    return this.logger.deleteLogs();
+  }
 
-	getLogs() {
-		return this.logger.logArray;
-	}
+  getLogs() {
+    return this.logger.logArray;
+  }
 
 }
 

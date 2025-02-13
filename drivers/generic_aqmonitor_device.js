@@ -1,5 +1,5 @@
 /*
-Copyright 2019 - 2022, Robin de Gruijter (gruijter@hotmail.com)
+Copyright 2019 - 2025, Robin de Gruijter (gruijter@hotmail.com)
 
 This file is part of com.gruijter.openaq.
 
@@ -28,83 +28,85 @@ const Homey = require('homey');
 
 class GenericAQMonitorDevice extends Homey.Device {
 
-	// this method is called when the Device is inited
-	async onInitDevice() {
-		this.log(`device init ${this.getClass()} ${this.getName()}`);
-		clearInterval(this.intervalIdDevicePoll);	// if polling, stop polling
-		this.settings = await this.getSettings();
+  // this method is called when the Device is inited
+  async onInitDevice() {
+    this.log(`device init ${this.getClass()} ${this.getName()}`);
+    clearInterval(this.intervalIdDevicePoll); // if polling, stop polling
+    this.settings = await this.getSettings();
 
-		// start scanning
-		this.scan();
-		this.intervalIdDevicePoll = setInterval(async () => {
-			try {
-				this.scan();
-			} catch (error) { this.log('intervalIdDevicePoll error', error); }
-		}, 1000 * 60 * this.getSetting('pollingInterval'));
-	}
+    // start scanning
+    this.scan();
+    this.intervalIdDevicePoll = setInterval(async () => {
+      try {
+        this.scan();
+      } catch (error) {
+        this.log('intervalIdDevicePoll error', error);
+      }
+    }, 1000 * 60 * this.getSetting('pollingInterval'));
+  }
 
-	// this method is called when the Device is added
-	onAdded() {
-		this.log(`${this.getData().id} added: ${this.getName()}`);
-	}
+  // this method is called when the Device is added
+  onAdded() {
+    this.log(`${this.getData().id} added: ${this.getName()}`);
+  }
 
-	// this method is called when the Device is deleted
-	onDeleted() {
-		this.log(`${this.getData().id} deleted: ${this.getName()}`);
-		clearInterval(this.intervalIdDevicePoll);
-	}
+  // this method is called when the Device is deleted
+  onDeleted() {
+    this.log(`${this.getData().id} deleted: ${this.getName()}`);
+    clearInterval(this.intervalIdDevicePoll);
+  }
 
-	// this method is called when the user has changed the device's settings in Homey.
-	onSettings() {
-		// first stop polling the device, then start init after short delay
-		clearInterval(this.intervalIdDevicePoll);
-		this.log(`${this.getData().id} ${this.getName()} device settings changed`);
-		this.setAvailable()
-			.catch(this.error);
-		setTimeout(() => {
-			this.onInit();
-		}, 10000);
-	}
+  // this method is called when the user has changed the device's settings in Homey.
+  onSettings() {
+    // first stop polling the device, then start init after short delay
+    clearInterval(this.intervalIdDevicePoll);
+    this.log(`${this.getData().id} ${this.getName()} device settings changed`);
+    this.setAvailable()
+      .catch(this.error);
+    setTimeout(() => {
+      this.onInit();
+    }, 10000);
+  }
 
-	setCapability(capability, value) {
-		if (this.hasCapability(capability)) {
-			this.setCapabilityValue(capability, value)
-				.catch((error) => {
-					this.log(error, capability, value);
-				});
-		}
-	}
+  setCapability(capability, value) {
+    if (this.hasCapability(capability)) {
+      this.setCapabilityValue(capability, value)
+        .catch((error) => {
+          this.log(error, capability, value);
+        });
+    }
+  }
 
-	async scan() {
-		try {
-			const device = this;
-			const rawData = await this.driver.getRawData(device)
-				.catch((error) => {
-					this.setSettings({ station_dst: error.toString() });
-					throw error;
-				});
-			const capabilities = this.getCapabilities();
-			// ['measure_pm25', 'measure_pm10', 'measure_so2', 'measure_no2', 'measure_o3', 'measure_co', 'measure_bc', 'measure_temperature', 'measure_pressure']
-			const values = [];
-			capabilities.forEach((capability) => {
-				values.push(this.driver.getValue(device, rawData, capability.replace('measure_', '')));
-			});
-			this.log(values);
-			values.forEach((value) => {
-				this.setCapability(`measure_${value.parameter}`, value.value);
-				if (value.parameter === 'pm25') {
-					if (value.distance && value.parameter) {
-						this.setSettings({ station_dst: value.distance.toString() });
-					}
-					if (value.location) {
-						this.setSettings({ station_loc: value.location });
-					}
-				}
-			});
-		} catch (error) {
-			this.error(error);
-		}
-	}
+  async scan() {
+    try {
+      const device = { ...this };
+      const rawData = await this.driver.getRawData(device)
+        .catch((error) => {
+          this.setSettings({ station_dst: error.toString() });
+          throw error;
+        });
+      const capabilities = this.getCapabilities();
+      // ['measure_pm25', 'measure_pm10', 'measure_so2', 'measure_no2', 'measure_o3', 'measure_co', 'measure_bc', 'measure_temperature', 'measure_pressure']
+      const values = [];
+      capabilities.forEach((capability) => {
+        values.push(this.driver.getValue(device, rawData, capability.replace('measure_', '')));
+      });
+      this.log(values);
+      values.forEach((value) => {
+        this.setCapability(`measure_${value.parameter}`, value.value);
+        if (value.parameter === 'pm25') {
+          if (value.distance && value.parameter) {
+            this.setSettings({ station_dst: value.distance.toString() });
+          }
+          if (value.location) {
+            this.setSettings({ station_loc: value.location });
+          }
+        }
+      });
+    } catch (error) {
+      this.error(error);
+    }
+  }
 
 }
 
