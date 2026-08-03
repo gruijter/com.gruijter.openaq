@@ -6,8 +6,10 @@ Add one or multiple virtual outdoor air quality monitors to Homey. The informati
 available free of charge by a number of services. Depending on the service and station you
 select, the following parameters are provided:
 
+* PM1 (particulate matter, available with Luftdaten)
 * PM2.5 (particulate matter)
 * PM10 (particulate matter)
+* CO2 (carbon dioxide, available with Luftdaten)
 * O3 (ozone)
 * SO2 (sulfur dioxide)
 * NO2 (nitrogen dioxide)

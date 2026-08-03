@@ -27,15 +27,17 @@ const driverSpecifics = {
 };
 
 const searchStrings = {
+  pm1: 'P0',
   pm25: 'P2',
   pm10: 'P1',
+  co2: 'co2_ppm',
   temperature: 'temperature',
   pressure: 'pressure',
   humidity: 'humidity',
   noise: 'noise_LAeq',
 };
 
-const capabilities = ['measure_pm25', 'measure_pm10', 'measure_temperature', 'measure_pressure', 'measure_humidity', 'measure_noise'];
+const capabilities = ['measure_pm1', 'measure_pm25', 'measure_pm10', 'measure_co2', 'measure_temperature', 'measure_pressure', 'measure_humidity', 'measure_noise'];
 
 class LDMonitorDriver extends GenericAQMonitorDriver {
 
@@ -48,24 +50,23 @@ class LDMonitorDriver extends GenericAQMonitorDriver {
     this.getRawData = async (device) => {
       try {
         const { settings } = device;
-        let sensorId = null;
+        let lat = settings ? settings.lat : null;
+        let lon = settings ? settings.lon : null;
         if (settings && settings.station_loc) {
-          const idMatch = settings.station_loc.match(/ID:(\d+)/);
-          if (idMatch) sensorId = Number(idMatch[1]);
+          const coordsMatch = settings.station_loc.match(/\(([-+]?\d*\.?\d+),\s*([-+]?\d*\.?\d+)\)/);
+          if (coordsMatch) {
+            lat = Number(coordsMatch[1]);
+            lon = Number(coordsMatch[2]);
+          }
         }
 
-        let url;
-        if (sensorId) {
-          url = `https://data.sensor.community/airrohr/v1/sensor/${sensorId}/`;
-        } else {
-          const dst = (settings.dst && settings.dst >= 1) ? settings.dst : 1;
-          url = `https://data.sensor.community/airrohr/v1/filter/area=${settings.lat},${settings.lon},${dst}`;
-        }
+        const dst = Math.max(1, Math.ceil((settings && settings.dst) || 1));
+        const url = `https://data.sensor.community/airrohr/v1/filter/area=${lat},${lon},${dst}`;
 
         const headers = {
           'Cache-Control': 'no-cache',
           Accept: 'application/json',
-          'User-Agent': 'Homey-OutdoorAirQuality/2.3.0',
+          'User-Agent': 'Homey-OutdoorAirQuality/3.0.0',
         };
 
         const results = await this._fetchJson(url, { headers }, this.timeout);
@@ -80,6 +81,16 @@ class LDMonitorDriver extends GenericAQMonitorDriver {
       const searchParam = searchStrings[parameter];
       if (!searchParam || !Array.isArray(results) || results.length === 0) return {};
 
+      const matchesSearch = (dp) => {
+        if (searchParam === 'pressure') {
+          return dp.value_type === 'pressure' || dp.value_type === 'pressure_at_sealevel';
+        }
+        if (searchParam === 'co2_ppm') {
+          return dp.value_type === 'co2_ppm' || dp.value_type === 'co2';
+        }
+        return dp.value_type === searchParam;
+      };
+
       const eightHoursAgo = new Date(Date.now() - (8 * 60 * 60 * 1000));
       const maxDistMeters = (settings.dst || 25) * 1000;
 
@@ -87,7 +98,7 @@ class LDMonitorDriver extends GenericAQMonitorDriver {
         .filter((station) => station.location && station.sensordatavalues)
         .filter((station) => new Date(station.timestamp) > eightHoursAgo)
         .filter((station) => this.distance(settings.lat, settings.lon, station.location.latitude, station.location.longitude) <= maxDistMeters)
-        .filter((station) => station.sensordatavalues.some((dp) => dp.value_type === searchParam))
+        .filter((station) => station.sensordatavalues.some(matchesSearch))
         .filter((station) => settings.include_indoor || !station.location.indoor)
         .sort((a, b) => this.distance(settings.lat, settings.lon, a.location.latitude, a.location.longitude)
           - this.distance(settings.lat, settings.lon, b.location.latitude, b.location.longitude));
@@ -101,7 +112,7 @@ class LDMonitorDriver extends GenericAQMonitorDriver {
 
       if (!nearest) return {};
 
-      const dataPoint = nearest.sensordatavalues.find((dp) => dp.value_type === searchParam);
+      const dataPoint = nearest.sensordatavalues.find(matchesSearch);
       if (!dataPoint) return {};
 
       let valNum = Number(dataPoint.value);

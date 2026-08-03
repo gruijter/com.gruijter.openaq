@@ -31,6 +31,17 @@ class GenericAQMonitorDevice extends Homey.Device {
     }
     this.settings = await this.getSettings();
 
+    // Migrate missing capabilities to existing devices
+    const driverCaps = this.driver && this.driver.manifest && this.driver.manifest.capabilities;
+    if (Array.isArray(driverCaps)) {
+      for (const capability of driverCaps) {
+        if (!this.hasCapability(capability)) {
+          this.log(`Adding missing capability ${capability} to ${this.getName()}`);
+          await this.addCapability(capability).catch((error) => this.error(`Error adding capability ${capability}:`, error));
+        }
+      }
+    }
+
     // initial scan
     await this.scan();
 

@@ -2,17 +2,19 @@ Weet wat de luchtvervuiling is, in bijna real-time, overal in de wereld of bij j
 
 Voeg 1 of meerdere buitenluchtkwaliteit meters toe aan Homey. De informatie is afkomstig van diverse gratis beschikbare bronnen. Afhankelijk van de databron en geselecteerde station zijn de volgende gegevens beschikbaar:
 
+* PM1 (fijnstof, alleen beschikbaar met Luftdaten)
 * PM2.5 (fijnstof)
 * PM10 (fijnstof)
+* CO2 (koolstofdioxide, alleen beschikbaar met Luftdaten)
 * O3 (ozon)
 * SO2 (zwaveldioxide)
 * NO2 (stikstofdioxide)
 * CO (koolmonoxide)
 * BC (koolstof, alleen beschikbaar met LuchtmeetnetNL en OpenAQ in bepaalde landen)
 * Temperatuur (alleen beschikbaar met Luftdaten)
-* Pressure (alleen beschikbaar met Luftdaten)
-* Humidity (alleen beschikbaar met Luftdaten)
-* Noise (alleen beschikbaar met Luftdaten)
+* Luchtdruk (alleen beschikbaar met Luftdaten)
+* Luchtvochtigheid (alleen beschikbaar met Luftdaten)
+* Geluidsniveau (alleen beschikbaar met Luftdaten)
 
 API Sleutel Informatie:
 * OpenAQ (v3 API): Haal een gratis API sleutel op https://explore.openaq.org/register en vul deze in bij de OpenAQ apparaatinstellingen, of laat leeg om de ingebouwde Homey sleutel te gebruiken.
