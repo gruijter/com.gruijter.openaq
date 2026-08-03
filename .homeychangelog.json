@@ -25,5 +25,8 @@
   },
   "2.3.0": {
     "en": "Fix Luftdaten yet another API change."
+  },
+  "3.0.0": {
+    "en": "OpenAQ API v3 migration, Luchtmeetnet rate-limit fix, Homey FW >= 13 requirement, and overall code refactor."
   }
 }

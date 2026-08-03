@@ -1,7 +1,10 @@
 {
-  "extends": "@tsconfig/node12/tsconfig.json",
   "compilerOptions": {
+    "target": "ES2022",
+    "module": "commonjs",
+    "moduleResolution": "node",
     "allowJs": true,
+    "checkJs": false,
     "outDir": ".homeybuild/"
   }
 }

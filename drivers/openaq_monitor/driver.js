@@ -1,5 +1,5 @@
 /*
-Copyright 2019 - 2025, Robin de Gruijter (gruijter@hotmail.com)
+Copyright 2019 - 2026, Robin de Gruijter (gruijter@hotmail.com)
 
 This file is part of com.gruijter.openaq.
 
@@ -19,12 +19,12 @@ along with com.gruijter.openaq.  If not, see <http://www.gnu.org/licenses/>.
 
 'use strict';
 
-// const util = require('util');
+const Homey = require('homey');
 const GenericAQMonitorDriver = require('../generic_aqmonitor_driver');
 
 const driverSpecifics = {
   service: 'OpenAQ',
-  apiKey: 'N/A',
+  apiKey: '',
 };
 
 class OpenAQMonitorDriver extends GenericAQMonitorDriver {
@@ -32,100 +32,178 @@ class OpenAQMonitorDriver extends GenericAQMonitorDriver {
   onInit() {
     this.log('OpenAQ Monitor Driver started');
 
-    // add service specific properties and functions
     this.ds = driverSpecifics;
     this.timeout = 30000;
-    // get raw data from service in JSON format
+
+    this.getHeaders = (settings) => {
+      const apiKey = (settings && settings.api_key && settings.api_key.trim().length > 0)
+        ? settings.api_key.trim()
+        : Homey.env.OPENAQ_API_KEY;
+
+      const headers = {
+        Accept: 'application/json',
+      };
+      if (apiKey) {
+        headers['X-API-Key'] = apiKey;
+      }
+      return headers;
+    };
+
     this.getRawData = async (device) => {
       try {
         const { settings } = device;
-        const options = {
-          hostname: 'api.openaq.org',
-          path: `/v2/latest?coordinates=${settings.lat},${settings.lon}&radius=${settings.dst * 1000}`,
-          headers: {
-            'Content-Length': 0,
-          },
-          method: 'GET',
+        const headers = this.getHeaders(settings);
+
+        let locationId = null;
+        if (settings && settings.station_loc) {
+          const idMatch = settings.station_loc.match(/ID:(\d+)/);
+          if (idMatch) locationId = Number(idMatch[1]);
+        }
+
+        if (!locationId) {
+          // Find closest location by coordinates
+          const radiusMeters = Math.round((settings.dst || 100) * 1000);
+          const listUrl = `https://api.openaq.org/v3/locations?coordinates=${settings.lat},${settings.lon}&radius=${radiusMeters}&limit=10`;
+          const listData = await this._fetchJson(listUrl, { headers }, this.timeout);
+          if (listData && listData.results && listData.results.length > 0) {
+            // Pick nearest location
+            const sorted = listData.results.sort((a, b) => {
+              const dA = a.distance !== undefined ? a.distance : this.distance(settings.lat, settings.lon, a.coordinates.latitude, a.coordinates.longitude);
+              const dB = b.distance !== undefined ? b.distance : this.distance(settings.lat, settings.lon, b.coordinates.latitude, b.coordinates.longitude);
+              return dA - dB;
+            });
+            locationId = sorted[0].id;
+          }
+        }
+
+        if (!locationId) {
+          throw new Error('No OpenAQ locations found within specified range');
+        }
+
+        // Fetch location details (sensor mapping) and latest readings
+        const detailsUrl = `https://api.openaq.org/v3/locations/${locationId}`;
+        const latestUrl = `https://api.openaq.org/v3/locations/${locationId}/latest`;
+
+        const [detailsRes, latestRes] = await Promise.all([
+          this._fetchJson(detailsUrl, { headers }, this.timeout),
+          this._fetchJson(latestUrl, { headers }, this.timeout),
+        ]);
+
+        const locationData = detailsRes && detailsRes.results && detailsRes.results[0] ? detailsRes.results[0] : {};
+        const latestReadings = latestRes && latestRes.results ? latestRes.results : [];
+
+        // Build sensorId -> parameter mapping
+        const sensorMap = {};
+        if (locationData.sensors) {
+          locationData.sensors.forEach((sensor) => {
+            if (sensor.parameter && sensor.parameter.name) {
+              sensorMap[sensor.id] = sensor.parameter.name.toLowerCase();
+            }
+          });
+        }
+
+        return {
+          location: locationData,
+          sensorMap,
+          readings: latestReadings,
         };
-        const result = await this._makeHttpsRequest(options);
-        if (result.statusCode !== 200) throw Error(result.statusCode);
-        if (!result.headers['content-type'].includes('application/json')) {
-          throw Error('Wrong content type, expected application/json');
-        }
-        const jsonData = JSON.parse(result.body);
-        // console.log(util.inspect(jsonData, { depth: null, colors: true }));
-        if (jsonData.results === undefined) {
-          throw Error('Invalid response from API');
-        }
-        const { results } = jsonData;
-        return Promise.resolve(results);
       } catch (error) {
-        return Promise.reject(error.message);
+        throw new Error(`OpenAQ API Error: ${error.message}`);
       }
     };
-    // returns a normalised values object with at least { parameter: string, value: number }
-    this.getValue = (device, results, parameter) => {
-      // eslint-disable-next-line no-unused-vars
+
+    this.getValue = (device, rawData, parameter) => {
       const { settings } = device;
-      // filter for all locations in range that report the parameter
-      const hasParameter = results.filter((result) => {
-        const filteredArray = result.measurements.filter((measurement) => measurement.parameter === parameter);
-        return filteredArray.length > 0;
-      });
-      // console.log(util.inspect(hasParameter, { depth: null, colors: true }));
-      // get the most recent value that is most nearby, is not zero or negative, is not older then 8 hrs
-      const timeAgo = (new Date(Date.now() - (8 * 60 * 60 * 1000))).toISOString();
-      const latestValue = hasParameter.reduce((accu, current) => {
-        const currentMeasurement = current.measurements.filter((measurement) => measurement.parameter === parameter);
-        currentMeasurement[0].location = current.location;
-        currentMeasurement[0].coordinates = current.coordinates;
-        const dist = this.distance(settings.lat, settings.lon, current.coordinates.latitude, current.coordinates.longitude);
-        currentMeasurement[0].distance = Math.round(dist);
-        const bmTm = Date.parse(accu.lastUpdated);
-        const cmTm = Date.parse(currentMeasurement[0].lastUpdated);
-        if (!(currentMeasurement[0].value > 0) || (bmTm >= cmTm)) return accu;
-        return currentMeasurement[0];
-      }, { lastUpdated: timeAgo });
-      return latestValue;
+      if (!rawData || !rawData.readings || !rawData.sensorMap) return {};
+
+      const { location, sensorMap, readings } = rawData;
+      const targetParam = parameter.toLowerCase();
+
+      // Find sensor matching parameter
+      const matchingSensorIds = Object.keys(sensorMap)
+        .filter((sensorId) => sensorMap[sensorId] === targetParam)
+        .map(Number);
+
+      if (matchingSensorIds.length === 0) return {};
+
+      const reading = readings.find((r) => matchingSensorIds.includes(r.sensorsId) && r.value > -900);
+      let { lat, lon } = settings;
+      if (reading.coordinates && reading.coordinates.latitude !== undefined) {
+        lat = reading.coordinates.latitude;
+        lon = reading.coordinates.longitude;
+      } else if (location.coordinates && location.coordinates.latitude !== undefined) {
+        lat = location.coordinates.latitude;
+        lon = location.coordinates.longitude;
+      }
+      const dist = this.distance(settings.lat, settings.lon, lat, lon);
+
+      return {
+        parameter: targetParam,
+        value: Number(reading.value),
+        lastUpdated: reading.datetime ? new Date(reading.datetime.utc) : new Date(),
+        location: `ID:${location.id || ''} ${location.name || location.locality || ''}`.trim(),
+        coordinates: { latitude: lat, longitude: lon },
+        url: `https://openaq.org/#/location/${location.id || ''}`,
+        distance: Math.round(dist),
+      };
     };
+
     this.discover = async (settings) => {
       try {
+        const headers = this.getHeaders(settings);
+        const radiusMeters = Math.round((settings.dst || 100) * 1000);
+        const url = `https://api.openaq.org/v3/locations?coordinates=${settings.lat},${settings.lon}&radius=${radiusMeters}&limit=20`;
+
+        const data = await this._fetchJson(url, { headers }, this.timeout);
+        const results = (data && data.results) ? data.results : [];
+
         const deviceSets = [
           {
             name: 'OAQ Monitor @Homey',
             capabilities: ['measure_pm25', 'measure_pm10', 'measure_so2', 'measure_no2', 'measure_o3', 'measure_co'],
           },
           {
-            name: 'OAQ monitor @Homey_with_BC',
+            name: 'OAQ Monitor @Homey_with_BC',
             capabilities: ['measure_pm25', 'measure_pm10', 'measure_so2', 'measure_no2', 'measure_o3', 'measure_co', 'measure_bc'],
           },
         ];
-        const results = await this.getRawData({ settings });
-        const timeAgo = new Date(Date.now() - (8 * 60 * 60 * 1000)); // 8 hours
-        const withData = results.filter((station) => {
-          const hasData = station.measurements.filter((measurement) => (measurement.value > 0)
-            && (Date.parse(measurement.lastUpdated) > timeAgo));
-          return hasData.length > 0;
+
+        const sorted = results.sort((a, b) => {
+          const dA = a.distance !== undefined ? a.distance : this.distance(settings.lat, settings.lon, a.coordinates.latitude, a.coordinates.longitude);
+          const dB = b.distance !== undefined ? b.distance : this.distance(settings.lat, settings.lon, b.coordinates.latitude, b.coordinates.longitude);
+          return dA - dB;
         });
-        const sorted = withData.sort((a, b) => this.distance(settings.lat, settings.lon, a.coordinates.latitude, a.coordinates.longitude)
-          - this.distance(settings.lat, settings.lon, b.coordinates.latitude, b.coordinates.longitude));
-        // add the 5 nearest stations
-        sorted.forEach((station, index) => {
-          if (index > 4) return;
-          const dist = this.distance(settings.lat, settings.lon, station.coordinates.latitude, station.coordinates.longitude);
-          const set = {
-            name: `OAQ Monitor ${station.city || station.location}@${Math.round(dist)}m`,
+
+        sorted.slice(0, 5).forEach((station) => {
+          const dist = Math.round(station.distance !== undefined ? station.distance : this.distance(settings.lat, settings.lon, station.coordinates.latitude, station.coordinates.longitude));
+          const capabilities = [];
+          if (station.sensors) {
+            station.sensors.forEach((s) => {
+              if (s.parameter && s.parameter.name) {
+                const cap = `measure_${s.parameter.name.toLowerCase()}`;
+                if (!capabilities.includes(cap)) capabilities.push(cap);
+              }
+            });
+          }
+          if (capabilities.length === 0) {
+            capabilities.push('measure_pm25', 'measure_pm10', 'measure_no2');
+          }
+
+          deviceSets.push({
+            name: `OAQ Monitor ${station.locality || station.name}@${dist}m`,
             lat: Number(station.coordinates.latitude),
             lon: Number(station.coordinates.longitude),
             dst: 0.01,
-            stationDst: `${Math.round(dist)}`,
-            capabilities: ['measure_pm25', 'measure_pm10', 'measure_so2', 'measure_no2', 'measure_o3', 'measure_co'],
-          };
-          deviceSets.push(set);
+            stationDst: `${dist}`,
+            stationLoc: `ID:${station.id} (${station.name})`,
+            capabilities,
+          });
         });
+
         return deviceSets;
       } catch (error) {
-        return Promise.reject(error);
+        this.error('Discover error:', error);
+        throw error;
       }
     };
   }
@@ -133,150 +211,3 @@ class OpenAQMonitorDriver extends GenericAQMonitorDriver {
 }
 
 module.exports = OpenAQMonitorDriver;
-
-/*
-{
-  "meta": {
-    "name": "openaq-api",
-    "license": "CC BY 4.0d",
-    "website": "https://u50g7n0cbj.execute-api.us-east-1.amazonaws.com/",
-    "page": 1,
-    "limit": 100,
-    "found": 93
-  },
-  "results": [
-    {
-      "location": "Botlek-Spoortunnel",
-      "city": "Botlek",
-      "country": "NL",
-      "coordinates": {
-        "latitude": 51.8701,
-        "longitude": 4.31806
-      },
-      "measurements": [
-        {
-          "parameter": "no2",
-          "value": -995,
-          "lastUpdated": "2016-03-24T08:00:00+00:00",
-          "unit": "µg/m³"
-        },
-        {
-          "parameter": "pm25",
-          "value": -995,
-          "lastUpdated": "2016-03-24T08:00:00+00:00",
-          "unit": "µg/m³"
-        },
-        {
-          "parameter": "pm10",
-          "value": -995,
-          "lastUpdated": "2016-03-24T08:00:00+00:00",
-          "unit": "µg/m³"
-        }
-      ]
-    },
-    {
-      "location": "Leiden-Willem de Zwijgerlaan",
-      "city": "Leiden",
-      "country": "NL",
-      "coordinates": {
-        "latitude": 52.1678,
-        "longitude": 4.50756
-      },
-      "measurements": [
-        {
-          "parameter": "pm10",
-          "value": 18.99,
-          "lastUpdated": "2015-09-14T04:00:00+00:00",
-          "unit": "µg/m³"
-        }
-      ]
-    },
-    {
-      "location": "Balk-Trophornsterweg",
-      "city": "Balk",
-      "country": "NL",
-      "coordinates": {
-        "latitude": 52.9169,
-        "longitude": 5.57349
-      },
-      "measurements": [
-        {
-          "parameter": "o3",
-          "value": 57.27,
-          "lastUpdated": "2021-02-27T03:00:00+00:00",
-          "unit": "µg/m³"
-        },
-        {
-          "parameter": "pm10",
-          "value": -7.09,
-          "lastUpdated": "2021-02-27T03:00:00+00:00",
-          "unit": "µg/m³"
-        },
-        {
-          "parameter": "no2",
-          "value": 3.09,
-          "lastUpdated": "2021-02-27T03:00:00+00:00",
-          "unit": "µg/m³"
-        }
-      ]
-    },
-*/
-
-/* V1 (oud)
-{ meta:
-   { name: 'openaq-api',
-     license: 'CC BY 4.0',
-     website: 'https://docs.openaq.org/',
-     page: 1,
-     limit: 100,
-     found: 105 },
-  results:
-   [ { location: 'Utrecht-Kardinaal de Jongweg',
-       city: 'Utrecht',
-       country: 'NL',
-       distance: 8532.12283846661,
-       measurements:
-        [ { parameter: 'no2',
-            value: 54.92,
-            lastUpdated: '2016-09-08T06:00:00.000Z',
-            unit: 'µg/m³',
-            sourceName: 'Netherlands',
-            averagingPeriod: { value: 1, unit: 'hours' } },
-          { parameter: 'pm10',
-            value: 19.63,
-            lastUpdated: '2016-09-08T06:00:00.000Z',
-            unit: 'µg/m³',
-            sourceName: 'Netherlands',
-            averagingPeriod: { value: 24, unit: 'hours' } },
-          { parameter: 'pm25',
-            value: 9.280301,
-            lastUpdated: '2016-09-08T06:00:00.000Z',
-            unit: 'µg/m³',
-            sourceName: 'Netherlands',
-            averagingPeriod: { value: 24, unit: 'hours' } } ],
-       coordinates: { latitude: 52.105, longitude: 5.12446 } },
-     { location: 'Utrecht-de Jongweg',
-       city: 'Utrecht',
-       country: 'NL',
-       distance: 8532.12283846661,
-       measurements:
-        [ { parameter: 'pm25',
-            value: 8.406,
-            lastUpdated: '2019-09-03T09:00:00.000Z',
-            unit: 'µg/m³',
-            sourceName: 'Netherlands',
-            averagingPeriod: { value: 24, unit: 'hours' } },
-          { parameter: 'pm10',
-            value: 4.43,
-            lastUpdated: '2019-09-03T09:00:00.000Z',
-            unit: 'µg/m³',
-            sourceName: 'Netherlands',
-            averagingPeriod: { value: 24, unit: 'hours' } },
-          { parameter: 'no2',
-            value: 22.05,
-            lastUpdated: '2019-09-03T09:00:00.000Z',
-            unit: 'µg/m³',
-            sourceName: 'Netherlands',
-            averagingPeriod: { value: 1, unit: 'hours' } } ],
-       coordinates: { latitude: 52.105, longitude: 5.12446 } },
-*/

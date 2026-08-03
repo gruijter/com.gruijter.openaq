@@ -1,5 +1,5 @@
 /*
-Copyright 2019 - 2025, Robin de Gruijter (gruijter@hotmail.com)
+Copyright 2019 - 2026, Robin de Gruijter (gruijter@hotmail.com)
 
 This file is part of com.gruijter.openaq.
 
@@ -17,94 +17,111 @@ You should have received a copy of the GNU General Public License
 along with com.gruijter.openaq.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/* eslint-disable prefer-destructuring */
-
 'use strict';
 
 const Homey = require('homey');
-// const util = require('util');
-
-// const setTimeoutPromise = util.promisify(setTimeout);
 
 class GenericAQMonitorDevice extends Homey.Device {
 
-  // this method is called when the Device is inited
   async onInitDevice() {
     this.log(`device init ${this.getClass()} ${this.getName()}`);
-    clearInterval(this.intervalIdDevicePoll); // if polling, stop polling
+    if (this.intervalIdDevicePoll) {
+      clearInterval(this.intervalIdDevicePoll);
+      this.intervalIdDevicePoll = null;
+    }
     this.settings = await this.getSettings();
 
-    // start scanning
-    this.scan();
+    // initial scan
+    await this.scan();
+
+    const intervalMinutes = Math.max(1, this.getSetting('pollingInterval') || 10);
     this.intervalIdDevicePoll = setInterval(async () => {
       try {
-        this.scan();
+        await this.scan();
       } catch (error) {
-        this.log('intervalIdDevicePoll error', error);
+        this.error('Polling error:', error);
       }
-    }, 1000 * 60 * this.getSetting('pollingInterval'));
+    }, 1000 * 60 * intervalMinutes);
   }
 
-  // this method is called when the Device is added
   onAdded() {
     this.log(`${this.getData().id} added: ${this.getName()}`);
   }
 
-  // this method is called when the Device is deleted
   onDeleted() {
     this.log(`${this.getData().id} deleted: ${this.getName()}`);
-    clearInterval(this.intervalIdDevicePoll);
+    if (this.intervalIdDevicePoll) {
+      clearInterval(this.intervalIdDevicePoll);
+      this.intervalIdDevicePoll = null;
+    }
   }
 
-  // this method is called when the user has changed the device's settings in Homey.
-  onSettings() {
-    // first stop polling the device, then start init after short delay
-    clearInterval(this.intervalIdDevicePoll);
-    this.log(`${this.getData().id} ${this.getName()} device settings changed`);
-    this.setAvailable()
-      .catch(this.error);
-    setTimeout(() => {
-      this.onInit();
-    }, 10000);
+  onUninit() {
+    if (this.intervalIdDevicePoll) {
+      clearInterval(this.intervalIdDevicePoll);
+      this.intervalIdDevicePoll = null;
+    }
+  }
+
+  async onSettings({ oldSettings, newSettings, changedKeys }) {
+    this.log(`${this.getData().id} ${this.getName()} settings changed:`, changedKeys);
+    if (this.intervalIdDevicePoll) {
+      clearInterval(this.intervalIdDevicePoll);
+      this.intervalIdDevicePoll = null;
+    }
+    this.settings = newSettings;
+    setImmediate(async () => {
+      await this.onInitDevice();
+    });
   }
 
   setCapability(capability, value) {
-    if (this.hasCapability(capability)) {
+    if (this.hasCapability(capability) && value !== undefined && value !== null && !Number.isNaN(value)) {
       this.setCapabilityValue(capability, value)
         .catch((error) => {
-          this.log(error, capability, value);
+          this.error(`Error setting ${capability}:`, error);
         });
     }
   }
 
   async scan() {
     try {
-      const device = { ...this };
-      const rawData = await this.driver.getRawData(device)
-        .catch((error) => {
-          this.setSettings({ station_dst: error.toString() });
-          throw error;
-        });
+      const device = { settings: this.getSettings(), name: this.getName(), id: this.getData().id };
+      const rawData = await this.driver.getRawData(device);
+
       const capabilities = this.getCapabilities();
-      // ['measure_pm25', 'measure_pm10', 'measure_so2', 'measure_no2', 'measure_o3', 'measure_co', 'measure_bc', 'measure_temperature', 'measure_pressure']
-      const values = [];
-      capabilities.forEach((capability) => {
-        values.push(this.driver.getValue(device, rawData, capability.replace('measure_', '')));
+      const values = capabilities.map((capability) => {
+        const param = capability.replace('measure_', '');
+        return this.driver.getValue(device, rawData, param);
       });
-      this.log(values);
-      values.forEach((value) => {
-        this.setCapability(`measure_${value.parameter}`, value.value);
-        if (value.parameter === 'pm25') {
-          if (value.distance && value.parameter) {
-            this.setSettings({ station_dst: value.distance.toString() });
+
+      let updatedDst = null;
+      let updatedLoc = null;
+
+      values.forEach((val) => {
+        if (val && val.parameter && val.value !== undefined && val.value !== null) {
+          this.setCapability(`measure_${val.parameter}`, val.value);
+          if (val.distance && !updatedDst) {
+            updatedDst = val.distance.toString();
           }
-          if (value.location) {
-            this.setSettings({ station_loc: value.location });
+          if (val.location && !updatedLoc) {
+            updatedLoc = val.location;
           }
         }
       });
+
+      const newSettings = {};
+      if (updatedDst) newSettings.station_dst = updatedDst;
+      if (updatedLoc) newSettings.station_loc = updatedLoc;
+      if (Object.keys(newSettings).length > 0) {
+        await this.setSettings(newSettings).catch(() => {});
+      }
+
+      await this.setAvailable();
     } catch (error) {
-      this.error(error);
+      this.error('Scan failed:', error);
+      const msg = typeof error === 'string' ? error : (error.message || 'Error fetching data');
+      await this.setUnavailable(msg).catch(() => {});
     }
   }
 

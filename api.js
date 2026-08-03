@@ -1,3 +1,5 @@
+'use strict';
+
 module.exports = {
   // retrieve logs
   async getLogs({ homey }) {

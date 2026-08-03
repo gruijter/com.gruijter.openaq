@@ -1,6 +1,6 @@
 /* eslint-disable class-methods-use-this */
 /*
-Copyright 2019 - 2025, Robin de Gruijter (gruijter@hotmail.com)
+Copyright 2019 - 2026, Robin de Gruijter (gruijter@hotmail.com)
 
 This file is part of com.gruijter.openaq.
 
@@ -21,94 +21,130 @@ along with com.gruijter.openaq.  If not, see <http://www.gnu.org/licenses/>.
 'use strict';
 
 const Homey = require('homey');
-const https = require('https');
 const crypto = require('crypto');
-const GeoPoint = require('geopoint');
 
-const randomID = () => `AQMonitor_${crypto.randomBytes(3).toString('hex')}`; // e.g AQMonitor_f9b327
+const randomID = () => `AQMonitor_${crypto.randomBytes(3).toString('hex')}`;
 
 class GenericAQMonitorDriver extends Homey.Driver {
 
   async onPairListDevices() {
     this.log('pairing started by user');
     try {
-      const devices = [];
+      const homeyLat = Math.round(this.homey.geolocation.getLatitude() * 100000000) / 100000000;
+      const homeyLon = Math.round(this.homey.geolocation.getLongitude() * 100000000) / 100000000;
       const options = {
-        lat: Math.round(this.homey.geolocation.getLatitude() * 100000000) / 100000000,
-        lon: Math.round(this.homey.geolocation.getLongitude() * 100000000) / 100000000,
-        dst: 25, // Radius in kilometres,
+        lat: homeyLat,
+        lon: homeyLon,
+        dst: 25,
       };
       const deviceSets = await this.discover(options);
-      deviceSets.forEach((set) => {
-        const device = {
-          name: set.name,
-          data: { id: randomID() },
-          settings: {
-            service: this.ds.service,
-            api_key: this.ds.apiKey,
-            lat: set.lat || Math.round(this.homey.geolocation.getLatitude() * 100000000) / 100000000,
-            lon: set.lon || Math.round(this.homey.geolocation.getLongitude() * 100000000) / 100000000,
-            dst: set.dst, // Radius in kilometres,
-            include_indoor: set.includeIndoor || false,
-            pollingInterval: set.pollingInterval || 10, // minutes
-            station_loc: set.stationLoc || 'unknown', // location description
-            station_dst: set.stationDst || 'unknown', // distance to station (m)
-          },
-          capabilities: set.capabilities,
-        };
-        devices.push(device);
-      });
-      return Promise.all(devices);
+      const devices = deviceSets.map((set) => ({
+        name: set.name,
+        data: { id: randomID() },
+        settings: {
+          service: this.ds.service,
+          api_key: this.ds.apiKey || '',
+          lat: set.lat || homeyLat,
+          lon: set.lon || homeyLon,
+          dst: set.dst || 25,
+          include_indoor: set.includeIndoor || false,
+          pollingInterval: set.pollingInterval || 10,
+          station_loc: set.stationLoc || 'unknown',
+          station_dst: set.stationDst || 'unknown',
+        },
+        capabilities: set.capabilities,
+      }));
+      return devices;
     } catch (error) {
-      this.error(error);
-      return Promise.reject(error);
+      this.error('Pairing error:', error);
+      throw error;
     }
   }
 
   distance(lat1, lon1, lat2, lon2) {
-    const from = new GeoPoint(Number(lat1), Number(lon1));
-    const to = new GeoPoint(Number(lat2), Number(lon2));
-    return Math.round(from.distanceTo(to, true) * 1000);
+    const R = 6371000; // Earth radius in meters
+    const toRad = Math.PI / 180;
+    const dLat = (Number(lat2) - Number(lat1)) * toRad;
+    const dLon = (Number(lon2) - Number(lon1)) * toRad;
+    const a = (Math.sin(dLat / 2) ** 2)
+      + Math.cos(Number(lat1) * toRad) * Math.cos(Number(lat2) * toRad) * (Math.sin(dLon / 2) ** 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return Math.round(R * c);
   }
 
-  getBounds(lat1, lon1, range) {
-    const center = new GeoPoint(lat1, lon1);
-    const bounds = center.boundingCoordinates(range, undefined, true);
+  getBounds(lat1, lon1, rangeKm) {
+    const radLat = Number(lat1) * (Math.PI / 180);
+    const radLon = Number(lon1) * (Math.PI / 180);
+    const radDist = Number(rangeKm) / 6371;
+
+    const minLat = radLat - radDist;
+    const maxLat = radLat + radDist;
+    const minLon = radLon - radDist / Math.cos(radLat);
+    const maxLon = radLon + radDist / Math.cos(radLat);
+
+    const toDeg = 180 / Math.PI;
     return {
-      lamin: bounds[0]._degLat,
-      lomin: bounds[0]._degLon,
-      lamax: bounds[1]._degLat,
-      lomax: bounds[1]._degLon,
+      lamin: minLat * toDeg,
+      lomin: minLon * toDeg,
+      lamax: maxLat * toDeg,
+      lomax: maxLon * toDeg,
     };
   }
 
-  _makeHttpsRequest(options, postData, timeout) {
-    return new Promise((resolve, reject) => {
-      const opts = options;
-      opts.timeout = timeout || 30000;
-      const req = https.request(opts, (res) => {
-        let resBody = '';
-        res.on('data', (chunk) => {
-          resBody += chunk;
-        });
-        res.once('end', () => {
-          if (!res.complete) {
-            return reject(Error('The connection was terminated while the message was still being sent'));
-          }
-          res.body = resBody;
-          return resolve(res); // resolve the request
-        });
-      });
-      req.on('error', (e) => {
-        req.destroy();
-        return reject(e);
-      });
-      req.on('timeout', () => {
-        req.destroy();
-      });
-      // req.write(postData);
-      req.end(postData);
+  async _fetchJson(url, options = {}, timeoutMs = 30000) {
+    const response = await fetch(url, {
+      ...options,
+      signal: AbortSignal.timeout(timeoutMs),
     });
+
+    if (!response.ok) {
+      let detail = '';
+      try {
+        const bodyText = await response.text();
+        if (bodyText) {
+          try {
+            const json = JSON.parse(bodyText);
+            detail = json.message || json.detail || json.error || bodyText;
+          } catch (_) {
+            detail = bodyText.substring(0, 100);
+          }
+        }
+      } catch (_) {}
+      const msg = detail ? `HTTP ${response.status}: ${detail}` : `HTTP Error ${response.status}`;
+      throw new Error(msg);
+    }
+
+    return response.json();
+  }
+
+  // Backwards compatible wrapper for existing calls if needed
+  async _makeHttpsRequest(options, postData, timeout = 30000) {
+    const protocol = options.protocol || 'https:';
+    const host = options.hostname || options.host;
+    const path = options.path || '';
+    const url = `${protocol}//${host}${path}`;
+    const fetchOpts = {
+      method: options.method || 'GET',
+      headers: options.headers || {},
+    };
+    if (postData) fetchOpts.body = postData;
+
+    const response = await fetch(url, {
+      ...fetchOpts,
+      signal: AbortSignal.timeout(timeout),
+    });
+
+    const body = await response.text();
+    const headers = {};
+    response.headers.forEach((val, key) => {
+      headers[key] = val;
+    });
+
+    return {
+      statusCode: response.status,
+      headers,
+      body,
+    };
   }
 
 }

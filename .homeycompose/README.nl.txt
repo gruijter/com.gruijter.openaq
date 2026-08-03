@@ -14,8 +14,13 @@ Voeg 1 of meerdere buitenluchtkwaliteit meters toe aan Homey. De informatie is a
 * Humidity (alleen beschikbaar met Luftdaten)
 * Noise (alleen beschikbaar met Luftdaten)
 
+API Sleutel Informatie:
+* OpenAQ (v3 API): Haal een gratis API sleutel op https://explore.openaq.org/register en vul deze in bij de OpenAQ apparaatinstellingen, of laat leeg om de ingebouwde Homey sleutel te gebruiken.
+* WAQI: Optionele eigen sleutel in apparaatinstellingen, of laat leeg om de ingebouwde Homey sleutel te gebruiken.
+
 Deze app gebruikt:
-* OpenAQ API. Zie licentie informatie hier: https://docs.openaq.org/
-* Luftdaten API: https://sensor.community/en/
+* OpenAQ API: https://docs.openaq.org/
+* Luftdaten / Sensor.Community API: https://sensor.community/en/
 * World Air Quality Index (WAQI): http://waqi.info/
+* Luchtmeetnet NL API: https://api.luchtmeetnet.nl/
 * Data geleverd door de World's Environmental Protection Agencies: http://aqicn.org/sources/

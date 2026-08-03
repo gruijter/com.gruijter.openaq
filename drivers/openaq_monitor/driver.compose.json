@@ -54,6 +54,19 @@
       },
       "children": [
         {
+          "id": "api_key",
+          "type": "password",
+          "label": {
+            "en": "API Key",
+            "nl": "API Sleutel"
+          },
+          "hint": {
+            "en": "Get a free API key from explore.openaq.org. Leave empty to use built-in Homey key.",
+            "nl": "Haal een gratis API sleutel op explore.openaq.org. Leeg laten om de ingebouwde Homey sleutel te gebruiken."
+          },
+          "value": ""
+        },
+        {
           "id": "lat",
           "type": "number",
           "label": {
