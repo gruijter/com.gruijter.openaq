@@ -5,11 +5,28 @@
   "sdk": 3,
   "brandColor": "#00aaff",
   "name": {
-    "en": "Outdoor AirQuality"
+    "en": "Outdoor AirQuality",
+    "nl": "Buitenluchtkwaliteit",
+    "de": "Außenluftqualität",
+    "fr": "Qualité de l'air extérieur",
+    "it": "Qualità dell'aria esterna",
+    "es": "Calidad del aire exterior",
+    "sv": "Utomhusluftkvalitet",
+    "no": "Utendørs luftkvalitet",
+    "da": "Udendørs luftkvalitet",
+    "pl": "Jakość powietrza na zewnątrz"
   },
   "description": {
     "en": "Outdoor Air quality monitor",
-    "nl": "Buitenluchtkwaliteit meter"
+    "nl": "Buitenluchtkwaliteit meter",
+    "de": "Außenluftqualitätsmonitor",
+    "fr": "Moniteur de qualité de l'air extérieur",
+    "it": "Monitor della qualità dell'aria esterna",
+    "es": "Monitor de calidad del aire exterior",
+    "sv": "Utomhusluftkvalitetsmätare",
+    "no": "Utendørs luftkvalitetsmåler",
+    "da": "Udendørs luftkvalitetsmåler",
+    "pl": "Monitor jakości powietrza na zewnątrz"
   },
   "tags": {
     "en": [

@@ -1,0 +1,18 @@
+{
+	"settings": {
+		"benefit": "Udendørs luftkvalitetsmåler",
+		"tab1": {
+			"title": "Vejledning",
+			"addDeviceTitle": "Tilføj en ny enhed",
+			"addDeviceInstructions": "Tilføj en ny måler via Homey-fanen `Enheder`. Som standard bliver den virtuelle måler 'installeret' på din Homeys placering. Du kan dog manuelt tilføje flere målere og indtaste enhver placering i verden (lat/lon). Appen vil søge efter en datakilde i nærheden af den indstillede placering. Tilgængeligheden af data afhænger af den valgte tjeneste (= enhedstype). Du kan ændre placeringen og andre indstillinger i enhedsindstillingerne."
+		},
+		"tab2": {
+			"title": "Fejlfindingslogge",
+			"logs": "Logge",
+			"deletelogs": "Slet logge",
+			"updateLogs": "Opdater logge",
+			"deleteWarning": "Vil du slette alle logge?",
+			"deleted": "Logge slettet!"
+		}
+	}
+}

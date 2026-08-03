@@ -1,0 +1,18 @@
+{
+	"settings": {
+		"benefit": "Monitor de calidad del aire exterior",
+		"tab1": {
+			"title": "Instrucciones",
+			"addDeviceTitle": "Añadir un nuevo dispositivo",
+			"addDeviceInstructions": "Añade un nuevo monitor a través de la pestaña `Dispositivos` de Homey. De forma predeterminada, el monitor virtual se 'instalará' en la ubicación de tu Homey. Sin embargo, puedes añadir manualmente varios monitores e introducir cualquier ubicación del mundo (lat/lon). La aplicación buscará una fuente de datos en las proximidades de la ubicación configurada. La disponibilidad de los datos depende del servicio (= tipo de dispositivo) seleccionado. Puedes cambiar la ubicación y otros ajustes en la configuración del dispositivo."
+		},
+		"tab2": {
+			"title": "Registros de depuración",
+			"logs": "Registros",
+			"deletelogs": "Eliminar registros",
+			"updateLogs": "Actualizar registros",
+			"deleteWarning": "¿Eliminar todos los registros?",
+			"deleted": "¡Registros eliminados!"
+		}
+	}
+}

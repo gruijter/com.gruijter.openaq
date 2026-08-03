@@ -1,7 +1,15 @@
 {
   "name": {
     "en": "Luftdaten Monitor",
-    "nl": "Luftdaten Meter"
+    "nl": "Luftdaten Meter",
+    "de": "Luftdaten Monitor",
+    "fr": "Moniteur Luftdaten",
+    "it": "Monitor Luftdaten",
+    "es": "Monitor Luftdaten",
+    "sv": "Luftdaten-mätare",
+    "no": "Luftdaten-måler",
+    "da": "Luftdaten-måler",
+    "pl": "Monitor Luftdaten"
   },
   "images": {
     "large": "drivers/ld_monitor/assets/images/large.jpg",
@@ -39,7 +47,15 @@
       "type": "group",
       "label": {
         "en": "Monitor settings",
-        "nl": "Meter instellingen"
+        "nl": "Meter instellingen",
+        "de": "Monitoreinstellungen",
+        "fr": "Paramètres du moniteur",
+        "it": "Impostazioni monitor",
+        "es": "Ajustes del monitor",
+        "sv": "Mätarinställningar",
+        "no": "Målerinnstillinger",
+        "da": "Målerindstillinger",
+        "pl": "Ustawienia monitora"
       },
       "children": [
         {
@@ -47,11 +63,27 @@
           "type": "number",
           "label": {
             "en": "Latitude",
-            "nl": "Breedtegraad"
+            "nl": "Breedtegraad",
+            "de": "Breitengrad",
+            "fr": "Latitude",
+            "it": "Latitudine",
+            "es": "Latitud",
+            "sv": "Breddgrad",
+            "no": "Breddegrad",
+            "da": "Breddegrad",
+            "pl": "Szerokość geograficzna"
           },
           "hint": {
             "en": "The latitude of the monitor.",
-            "nl": "De breedtegraad van de monitor."
+            "nl": "De breedtegraad van de monitor.",
+            "de": "Der Breitengrad des Monitors.",
+            "fr": "La latitude du moniteur.",
+            "it": "La latitudine del monitor.",
+            "es": "La latitud del monitor.",
+            "sv": "Mätarens breddgrad.",
+            "no": "Målerens breddegrad.",
+            "da": "Målerens breddegrad.",
+            "pl": "Szerokość geograficzna monitora."
           },
           "value": 52.228936
         },
@@ -60,11 +92,27 @@
           "type": "number",
           "label": {
             "en": "Longitude",
-            "nl": "Lengtegraad"
+            "nl": "Lengtegraad",
+            "de": "Längengrad",
+            "fr": "Longitude",
+            "it": "Longitudine",
+            "es": "Longitud",
+            "sv": "Längdgrad",
+            "no": "Lengdegrad",
+            "da": "Længdegrad",
+            "pl": "Długość geograficzna"
           },
           "hint": {
             "en": "The longitude of the monitor.",
-            "nl": "De lengtegraad van de monitor."
+            "nl": "De lengtegraad van de monitor.",
+            "de": "Der Längengrad des Monitors.",
+            "fr": "La longitude du moniteur.",
+            "it": "La longitudine del monitor.",
+            "es": "La longitud del monitor.",
+            "sv": "Mätarens längdgrad.",
+            "no": "Målerens lengdegrad.",
+            "da": "Målerens længdegrad.",
+            "pl": "Długość geograficzna monitora."
           },
           "value": 5.321492
         },
@@ -73,11 +121,27 @@
           "type": "number",
           "label": {
             "en": "Max. range (km)",
-            "nl": "Max. afstand (km)"
+            "nl": "Max. afstand (km)",
+            "de": "Max. Reichweite (km)",
+            "fr": "Portée max. (km)",
+            "it": "Portata max. (km)",
+            "es": "Alcance máx. (km)",
+            "sv": "Max. räckvidd (km)",
+            "no": "Maks. avstand (km)",
+            "da": "Maks. rækkevidde (km)",
+            "pl": "Maks. zasięg (km)"
           },
           "hint": {
             "en": "The maximum distance used to find online data.",
-            "nl": "De maximale afstand om online gegevens te vinden."
+            "nl": "De maximale afstand om online gegevens te vinden.",
+            "de": "Die maximale Entfernung zur Suche nach Online-Daten.",
+            "fr": "La distance maximale utilisée pour trouver des données en ligne.",
+            "it": "La distanza massima utilizzata per trovare dati online.",
+            "es": "La distancia máxima utilizada para buscar datos en línea.",
+            "sv": "Maximalt avstånd som används för att hitta onlinedata.",
+            "no": "Maksimal avstand som brukes til å finne onlinedata.",
+            "da": "Den maksimale afstand der bruges til at finde onlinedata.",
+            "pl": "Maksymalna odległość używana do znajdowania danych online."
           },
           "attr": {
             "min": 0,
@@ -90,11 +154,27 @@
           "type": "checkbox",
           "label": {
             "en": "Include indoor stations",
-            "nl": "Inclusief binnenstations"
+            "nl": "Inclusief binnenstations",
+            "de": "Innenstationen einschließen",
+            "fr": "Inclure les stations intérieures",
+            "it": "Includi stazioni interne",
+            "es": "Incluir estaciones de interior",
+            "sv": "Inkludera inomhusstationer",
+            "no": "Inkluder innendørsstasjoner",
+            "da": "Inkluder indendørsstationer",
+            "pl": "Uwzględnij stacje wewnętrzne"
           },
           "hint": {
             "en": "Include indoor stations to find online data.",
-            "nl": "Betrek binnenstations om online gegevens te vinden."
+            "nl": "Betrek binnenstations om online gegevens te vinden.",
+            "de": "Innenstationen einbeziehen, um Online-Daten zu finden.",
+            "fr": "Inclure les stations intérieures pour trouver des données en ligne.",
+            "it": "Includi stazioni interne per trovare dati online.",
+            "es": "Incluir estaciones de interior para buscar datos en línea.",
+            "sv": "Inkludera inomhusstationer för att hitta onlinedata.",
+            "no": "Inkluder innendørsstasjoner for å finne onlinedata.",
+            "da": "Inkluder indendørsstationer for at finde onlinedata.",
+            "pl": "Uwzględnij stacje wewnętrzne, aby znaleźć dane online."
           },
           "value": false
         },
@@ -103,7 +183,15 @@
           "type": "number",
           "label": {
             "en": "Scan interval (minutes)",
-            "nl": "Scan interval (minuten)"
+            "nl": "Scan interval (minuten)",
+            "de": "Scan-Intervall (Minuten)",
+            "fr": "Intervalle de balayage (minutes)",
+            "it": "Intervallo di scansione (minuti)",
+            "es": "Intervalo de escaneo (minutos)",
+            "sv": "Skanningsintervall (minuter)",
+            "no": "Skanningsintervall (minutter)",
+            "da": "Scanningsinterval (minutter)",
+            "pl": "Interwał skanowania (minuty)"
           },
           "attr": {
             "min": 1
@@ -116,7 +204,15 @@
       "type": "group",
       "label": {
         "en": "Service information",
-        "nl": "Dienst informatie"
+        "nl": "Dienst informatie",
+        "de": "Dienstinformationen",
+        "fr": "Informations sur le service",
+        "it": "Informazioni sul servizio",
+        "es": "Información del servicio",
+        "sv": "Tjänstinformation",
+        "no": "Tjenesteinformasjon",
+        "da": "Tjenesteinformation",
+        "pl": "Informacje o usłudze"
       },
       "children": [
         {
@@ -124,11 +220,27 @@
           "type": "label",
           "label": {
             "en": "Station location",
-            "nl": "Station locatie"
+            "nl": "Station locatie",
+            "de": "Station-Standort",
+            "fr": "Emplacement de la station",
+            "it": "Posizione della stazione",
+            "es": "Ubicación de la estación",
+            "sv": "Stationens plats",
+            "no": "Stasjonsplassering",
+            "da": "Stationsplacering",
+            "pl": "Lokalizacja stacji"
           },
           "hint": {
             "en": "Location of closest station used to find online data.",
-            "nl": "Locatie van dichtsbijzijnde station om online gegevens te vinden."
+            "nl": "Locatie van dichtsbijzijnde station om online gegevens te vinden.",
+            "de": "Standort der nächstgelegenen Station zur Datensuche.",
+            "fr": "Emplacement de la station la plus proche utilisée.",
+            "it": "Posizione della stazione più vicina utilizzata.",
+            "es": "Ubicación de la estación más cercana utilizada.",
+            "sv": "Plats för närmaste station som används för data.",
+            "no": "Plassering av nærmeste stasjon som brukes til data.",
+            "da": "Placering af nærmeste station der bruges til data.",
+            "pl": "Lokalizacja najbliższej stacji używanej do pobierania danych."
           },
           "value": ""
         },
@@ -137,11 +249,27 @@
           "type": "label",
           "label": {
             "en": "Station distance (m)",
-            "nl": "Afstand tot station (m)"
+            "nl": "Afstand tot station (m)",
+            "de": "Entfernung zur Station (m)",
+            "fr": "Distance à la station (m)",
+            "it": "Distanza dalla stazione (m)",
+            "es": "Distancia a la estación (m)",
+            "sv": "Avstånd till station (m)",
+            "no": "Avstand til stasjon (m)",
+            "da": "Afstand til station (m)",
+            "pl": "Odległość do stacji (m)"
           },
           "hint": {
             "en": "Distance to closest station used to find online data.",
-            "nl": "Afstand tot dichtsbijzijnde station om online gegevens te vinden."
+            "nl": "Afstand tot dichtsbijzijnde station om online gegevens te vinden.",
+            "de": "Entfernung zur nächstgelegenen Station zur Datensuche.",
+            "fr": "Distance à la station la plus proche utilisée.",
+            "it": "Distanza dalla stazione più vicina utilizzata.",
+            "es": "Distancia a la estación más cercana utilizada.",
+            "sv": "Avstånd till närmaste station som används för data.",
+            "no": "Avstand til nærmeste stasjon som brukes til data.",
+            "da": "Afstand til nærmeste station der bruges til data.",
+            "pl": "Odległość do najbliższej stacji używanej do pobierania danych."
           },
           "value": ""
         }

@@ -1,0 +1,18 @@
+{
+	"settings": {
+		"benefit": "Utomhusluftkvalitetsmätare",
+		"tab1": {
+			"title": "Instruktioner",
+			"addDeviceTitle": "Lägg till en ny enhet",
+			"addDeviceInstructions": "Lägg till en ny mätare via Homeys flik `Enheter`. Standardmässigt kommer den virtuella mätaren att 'installeras' på platsen för din Homey. Du kan dock manuellt lägga till flera mätare och ange valfri plats i världen (lat/lon). Appen letar efter en datakälla i närheten av den inställda platsen. Tillgängligheten av data beror på den valda tjänsten (= enhetstyp). Du kan ändra plats och andra inställningar i enhetsinställningarna."
+		},
+		"tab2": {
+			"title": "Felsökningsloggar",
+			"logs": "Loggar",
+			"deletelogs": "Rensa loggar",
+			"updateLogs": "Uppdatera loggar",
+			"deleteWarning": "Vill du radera alla loggar?",
+			"deleted": "Loggarna raderade!"
+		}
+	}
+}

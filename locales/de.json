@@ -1,0 +1,18 @@
+{
+	"settings": {
+		"benefit": "Außenluftqualitätsmonitor",
+		"tab1": {
+			"title": "Anweisungen",
+			"addDeviceTitle": "Neues Gerät hinzufügen",
+			"addDeviceInstructions": "Fügen Sie einen neuen Monitor über die Homey-Registerkarte `Geräte` hinzu. Standardmäßig wird der virtuelle Monitor am Standort Ihres Homey 'installiert'. Sie können jedoch manuell mehrere Monitore hinzufügen und jeden beliebigen Standort weltweit eingeben (Breitengrad/Längengrad). Die App sucht nach einer Datenquelle in der Nähe des eingestellten Standorts. Die Verfügbarkeit von Daten hängt vom gewählten Dienst (= Gerätetyp) ab. Sie können den Standort und andere Einstellungen in den Geräteeinstellungen ändern."
+		},
+		"tab2": {
+			"title": "Debug-Logs",
+			"logs": "Logs",
+			"deletelogs": "Logs löschen",
+			"updateLogs": "Logs aktualisieren",
+			"deleteWarning": "Alle Logs löschen?",
+			"deleted": "Logs gelöscht!"
+		}
+	}
+}

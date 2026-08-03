@@ -1,0 +1,18 @@
+{
+	"settings": {
+		"benefit": "Moniteur de qualité de l'air extérieur",
+		"tab1": {
+			"title": "Instructions",
+			"addDeviceTitle": "Ajouter un nouvel appareil",
+			"addDeviceInstructions": "Ajoutez un nouveau moniteur via l'onglet `Appareils` de Homey. Par défaut, le moniteur virtuel sera 'installé' à l'emplacement de votre Homey. Mais vous pouvez ajouter manuellement plusieurs moniteurs et saisir n'importe quel endroit dans le monde (lat/lon). L'application recherchera une source de données à proximité de l'emplacement défini. La disponibilité des données dépend du service (= type d'appareil) sélectionné. Vous pouvez modifier l'emplacement et d'autres paramètres dans les réglages de l'appareil."
+		},
+		"tab2": {
+			"title": "Journaux de débogage",
+			"logs": "Journaux",
+			"deletelogs": "Supprimer les journaux",
+			"updateLogs": "Actualiser les journaux",
+			"deleteWarning": "Supprimer tous les journaux ?",
+			"deleted": "Journaux supprimés !"
+		}
+	}
+}

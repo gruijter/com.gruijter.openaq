@@ -1,0 +1,18 @@
+{
+	"settings": {
+		"benefit": "Monitor jakości powietrza na zewnątrz",
+		"tab1": {
+			"title": "Instrukcje",
+			"addDeviceTitle": "Dodaj nowe urządzenie",
+			"addDeviceInstructions": "Dodaj nowy monitor w zakładce Homey `Urządzenia`. Domyślnie wirtualny monitor zostanie 'zainstalowany' w lokalizacji Twojego Homey. Możesz jednak ręcznie dodać wiele monitorów i wprowadzić dowolną lokalizację na świecie (szer./dł. geogr.). Aplikacja wyszuka źródło danych w pobliżu ustawionej lokalizacji. Dostępność danych zależy od wybranej usługi (= typu urządzenia). Lokalizację oraz inne ustawienia możesz zmienić w ustawieniach urządzenia."
+		},
+		"tab2": {
+			"title": "Logi debugowania",
+			"logs": "Logi",
+			"deletelogs": "Usuń logi",
+			"updateLogs": "Odśwież logi",
+			"deleteWarning": "Usunąć wszystkie logi?",
+			"deleted": "Logi zostały usunięte!"
+		}
+	}
+}
