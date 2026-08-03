@@ -1,5 +1,6 @@
 Version changelog
 
+v3.1.0  2026_08 Added PM1 and CO2 capabilities for Luftdaten, fixed climate data fetching, migrated measure_pm10 to standard Homey capability, and full 13-locale translations.
 v3.0.0  2026_08 OpenAQ API v3 migration, Luchtmeetnet rate-limit fix, Homey FW >= 13 requirement, and overall code refactor.
 v2.3.0  2025_02 Fix Luftdaten yet another API change.
 v2.2.2  Fix Luftdaten yet another API change. Removed LD@homey device during pair.

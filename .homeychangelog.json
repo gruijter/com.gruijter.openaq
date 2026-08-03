@@ -28,5 +28,8 @@
   },
   "3.0.0": {
     "en": "OpenAQ API v3 migration, Luchtmeetnet rate-limit fix, Homey FW >= 13 requirement, and overall code refactor."
+  },
+  "3.1.0": {
+    "en": "Added PM1 and CO2 capabilities for Luftdaten, fixed climate data fetching, migrated measure_pm10 to standard Homey capability, and full 13-locale translations."
   }
 }
