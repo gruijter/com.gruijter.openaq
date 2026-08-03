@@ -3,7 +3,17 @@
   "title": {
     "en": "The O3-level changed",
     "nl": "Het O3 niveau is veranderd",
-    "de": "Der O3-Gehalt hat sich geändert"
+    "de": "Der O3-Gehalt hat sich geändert",
+    "fr": "Le niveau de O3 a changé",
+    "it": "Il livello di O3 è cambiato",
+    "es": "El nivel de O3 ha cambiado",
+    "sv": "O3-nivån ändrades",
+    "no": "O3-nivået endret seg",
+    "da": "O3-niveauet ændrede sig",
+    "pl": "Poziom O3 uległ zmianie",
+    "ru": "Уровень O3 изменился",
+    "ar": "تغير مستوى O3",
+    "ko": "O3 수준이 변경됨"
   },
   "args": [
     {
@@ -12,7 +22,18 @@
       "filter": "driver_id=openaq_monitor|waqi_monitor|lmn_monitor",
       "placeholder": {
         "en": "Which monitor",
-        "nl": "Welke meter"
+        "nl": "Welke meter",
+        "de": "Welcher Monitor",
+        "fr": "Quel moniteur",
+        "it": "Quale monitor",
+        "es": "Qué monitor",
+        "sv": "Vilken mätare",
+        "no": "Hvilken måler",
+        "da": "Hvilken måler",
+        "pl": "Który monitor",
+        "ru": "Какой монитор",
+        "ar": "أي جهاز مراقبة",
+        "ko": "어느 모니터"
       }
     }
   ],
@@ -20,7 +41,19 @@
     {
       "name": "measure_o3",
       "title": {
-        "en": "O3"
+        "en": "O3",
+        "nl": "O3",
+        "de": "O3",
+        "fr": "O3",
+        "it": "O3",
+        "es": "O3",
+        "sv": "O3",
+        "no": "O3",
+        "da": "O3",
+        "pl": "O3",
+        "ru": "O3",
+        "ar": "O3",
+        "ko": "O3"
       },
       "type": "number",
       "example": 20

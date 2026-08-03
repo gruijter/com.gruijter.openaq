@@ -1,14 +1,38 @@
 {
   "type": "number",
   "title": {
-    "en": "SO2"
+    "en": "SO2",
+    "nl": "SO2",
+    "de": "SO2",
+    "fr": "SO2",
+    "it": "SO2",
+    "es": "SO2",
+    "sv": "SO2",
+    "no": "SO2",
+    "da": "SO2",
+    "pl": "SO2",
+    "ru": "SO2",
+    "ar": "SO2",
+    "ko": "SO2"
   },
   "units": {
     "en": "µg/m³"
   },
   "insights": true,
   "desc": {
-    "en": "SO2 - sulfur dioxide (μg/m3)"
+    "en": "SO2 - sulfur dioxide (μg/m3)",
+    "nl": "SO2 - zwaveldioxide (μg/m3)",
+    "de": "SO2 - Schwefeldioxid (μg/m3)",
+    "fr": "SO2 - dioxyde de soufre (μg/m3)",
+    "it": "SO2 - biossido di zolfo (μg/m3)",
+    "es": "SO2 - dióxido de azufre (μg/m3)",
+    "sv": "SO2 - svaveldioxid (μg/m3)",
+    "no": "SO2 - svoveldioksid (μg/m3)",
+    "da": "SO2 - svovldioxid (μg/m3)",
+    "pl": "SO2 - dwutlenek siarki (μg/m3)",
+    "ru": "SO2 - диоксид серы (μg/m3)",
+    "ar": "SO2 - ثاني أكسيد الكبريت (μg/m3)",
+    "ko": "SO2 - 이산화 황 (μg/m3)"
   },
   "decimals": 2,
   "getable": true,

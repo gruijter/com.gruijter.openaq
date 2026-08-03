@@ -1,14 +1,38 @@
 {
   "type": "number",
   "title": {
-    "en": "BC"
+    "en": "BC",
+    "nl": "BC",
+    "de": "Ruß (BC)",
+    "fr": "Carbone noir (BC)",
+    "it": "Carbonio nero (BC)",
+    "es": "Carbono negro (BC)",
+    "sv": "Sot (BC)",
+    "no": "Sot (BC)",
+    "da": "Sod (BC)",
+    "pl": "Sadza (BC)",
+    "ru": "Сажа (BC)",
+    "ar": "الكربون الأسود (BC)",
+    "ko": "블랙 카본 (BC)"
   },
   "units": {
     "en": "µg/m³"
   },
   "insights": true,
   "desc": {
-    "en": "BC - black carbon (μg/m3)"
+    "en": "BC - black carbon (μg/m3)",
+    "nl": "BC - roet (μg/m3)",
+    "de": "BC - Ruß (μg/m3)",
+    "fr": "BC - carbone noir (μg/m3)",
+    "it": "BC - carbonio nero (μg/m3)",
+    "es": "BC - carbono negro (μg/m3)",
+    "sv": "BC - sot (μg/m3)",
+    "no": "BC - sot (μg/m3)",
+    "da": "BC - sod (μg/m3)",
+    "pl": "BC - sadza (μg/m3)",
+    "ru": "BC - сажа (μg/m3)",
+    "ar": "BC - الكربون الأسود (μg/m3)",
+    "ko": "BC - 블랙 카본 (μg/m3)"
   },
   "decimals": 2,
   "getable": true,

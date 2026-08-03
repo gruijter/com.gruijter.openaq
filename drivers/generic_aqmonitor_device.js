@@ -76,6 +76,10 @@ class GenericAQMonitorDevice extends Homey.Device {
 
   async onSettings({ oldSettings, newSettings, changedKeys }) {
     this.log(`${this.getData().id} ${this.getName()} settings changed:`, changedKeys);
+    const userKeys = ['lat', 'lon', 'dst', 'include_indoor', 'pollingInterval', 'api_key'];
+    const hasUserChange = changedKeys.some((k) => userKeys.includes(k));
+    if (!hasUserChange) return;
+
     if (this.intervalIdDevicePoll) {
       clearInterval(this.intervalIdDevicePoll);
       this.intervalIdDevicePoll = null;
@@ -121,9 +125,10 @@ class GenericAQMonitorDevice extends Homey.Device {
         }
       });
 
+      const currentSettings = this.getSettings();
       const newSettings = {};
-      if (updatedDst) newSettings.station_dst = updatedDst;
-      if (updatedLoc) newSettings.station_loc = updatedLoc;
+      if (updatedDst && updatedDst !== currentSettings.station_dst) newSettings.station_dst = updatedDst;
+      if (updatedLoc && updatedLoc !== currentSettings.station_loc) newSettings.station_loc = updatedLoc;
       if (Object.keys(newSettings).length > 0) {
         await this.setSettings(newSettings).catch(() => {});
       }

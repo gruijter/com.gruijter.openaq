@@ -3,7 +3,17 @@
   "title": {
     "en": "The SO2-level changed",
     "nl": "Het SO2 niveau is veranderd",
-    "de": "Der SO2-Gehalt hat sich geändert"
+    "de": "Der SO2-Gehalt hat sich geändert",
+    "fr": "Le niveau de SO2 a changé",
+    "it": "Il livello di SO2 è cambiato",
+    "es": "El nivel de SO2 ha cambiado",
+    "sv": "SO2-nivån ändrades",
+    "no": "SO2-nivået endret seg",
+    "da": "SO2-niveauet ændrede sig",
+    "pl": "Poziom SO2 uległ zmianie",
+    "ru": "Уровень SO2 изменился",
+    "ar": "تغير مستوى SO2",
+    "ko": "SO2 수준이 변경됨"
   },
   "args": [
     {
@@ -12,7 +22,18 @@
       "filter": "driver_id=openaq_monitor|waqi_monitor|lmn_monitor",
       "placeholder": {
         "en": "Which monitor",
-        "nl": "Welke meter"
+        "nl": "Welke meter",
+        "de": "Welcher Monitor",
+        "fr": "Quel moniteur",
+        "it": "Quale monitor",
+        "es": "Qué monitor",
+        "sv": "Vilken mätare",
+        "no": "Hvilken måler",
+        "da": "Hvilken måler",
+        "pl": "Który monitor",
+        "ru": "Какой монитор",
+        "ar": "أي جهاز مراقبة",
+        "ko": "어느 모니터"
       }
     }
   ],
@@ -20,7 +41,19 @@
     {
       "name": "measure_so2",
       "title": {
-        "en": "SO2"
+        "en": "SO2",
+        "nl": "SO2",
+        "de": "SO2",
+        "fr": "SO2",
+        "it": "SO2",
+        "es": "SO2",
+        "sv": "SO2",
+        "no": "SO2",
+        "da": "SO2",
+        "pl": "SO2",
+        "ru": "SO2",
+        "ar": "SO2",
+        "ko": "SO2"
       },
       "type": "number",
       "example": 20

@@ -1,14 +1,38 @@
 {
   "type": "number",
   "title": {
-    "en": "NO2"
+    "en": "NO2",
+    "nl": "NO2",
+    "de": "NO2",
+    "fr": "NO2",
+    "it": "NO2",
+    "es": "NO2",
+    "sv": "NO2",
+    "no": "NO2",
+    "da": "NO2",
+    "pl": "NO2",
+    "ru": "NO2",
+    "ar": "NO2",
+    "ko": "NO2"
   },
   "units": {
     "en": "µg/m³"
   },
   "insights": true,
   "desc": {
-    "en": "NO2 - nitrogen dioxide (μg/m3)"
+    "en": "NO2 - nitrogen dioxide (μg/m3)",
+    "nl": "NO2 - stikstofdioxide (μg/m3)",
+    "de": "NO2 - Stickstoffdioxid (μg/m3)",
+    "fr": "NO2 - dioxyde d'azote (μg/m3)",
+    "it": "NO2 - biossido di azoto (μg/m3)",
+    "es": "NO2 - dióxido de nitrógeno (μg/m3)",
+    "sv": "NO2 - kvävedioxid (μg/m3)",
+    "no": "NO2 - nitrogendioksid (μg/m3)",
+    "da": "NO2 - kvælstofdioxid (μg/m3)",
+    "pl": "NO2 - dwutlenek azotu (μg/m3)",
+    "ru": "NO2 - диоксид азота (μg/m3)",
+    "ar": "NO2 - ثاني أكسيد النيتروجين (μg/m3)",
+    "ko": "NO2 - 이산화 질소 (μg/m3)"
   },
   "decimals": 2,
   "getable": true,

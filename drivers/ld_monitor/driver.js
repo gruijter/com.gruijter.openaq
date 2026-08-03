@@ -91,12 +91,20 @@ class LDMonitorDriver extends GenericAQMonitorDriver {
         return dp.value_type === searchParam;
       };
 
+      const parseUtcDate = (ts) => {
+        if (!ts) return new Date(0);
+        if (typeof ts === 'string' && !ts.includes('Z') && !ts.includes('+')) {
+          return new Date(`${ts.replace(' ', 'T')}Z`);
+        }
+        return new Date(ts);
+      };
+
       const eightHoursAgo = new Date(Date.now() - (8 * 60 * 60 * 1000));
       const maxDistMeters = (settings.dst || 25) * 1000;
 
       const filtered = results
         .filter((station) => station.location && station.sensordatavalues)
-        .filter((station) => new Date(station.timestamp) > eightHoursAgo)
+        .filter((station) => parseUtcDate(station.timestamp) > eightHoursAgo)
         .filter((station) => this.distance(settings.lat, settings.lon, station.location.latitude, station.location.longitude) <= maxDistMeters)
         .filter((station) => station.sensordatavalues.some(matchesSearch))
         .filter((station) => settings.include_indoor || !station.location.indoor)
@@ -108,7 +116,7 @@ class LDMonitorDriver extends GenericAQMonitorDriver {
       const targetSensorId = filtered[0].sensor.id;
       const nearest = filtered
         .filter((st) => st.sensor.id === targetSensorId)
-        .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))[0];
+        .sort((a, b) => parseUtcDate(b.timestamp) - parseUtcDate(a.timestamp))[0];
 
       if (!nearest) return {};
 

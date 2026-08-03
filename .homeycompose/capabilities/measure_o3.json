@@ -1,14 +1,38 @@
 {
   "type": "number",
   "title": {
-    "en": "O3"
+    "en": "O3",
+    "nl": "O3",
+    "de": "O3",
+    "fr": "O3",
+    "it": "O3",
+    "es": "O3",
+    "sv": "O3",
+    "no": "O3",
+    "da": "O3",
+    "pl": "O3",
+    "ru": "O3",
+    "ar": "O3",
+    "ko": "O3"
   },
   "units": {
     "en": "µg/m³"
   },
   "insights": true,
   "desc": {
-    "en": "O3 - ozone (μg/m3)"
+    "en": "O3 - ozone (μg/m3)",
+    "nl": "O3 - ozon (μg/m3)",
+    "de": "O3 - Ozon (μg/m3)",
+    "fr": "O3 - ozone (μg/m3)",
+    "it": "O3 - ozono (μg/m3)",
+    "es": "O3 - ozono (μg/m3)",
+    "sv": "O3 - ozon (μg/m3)",
+    "no": "O3 - ozon (μg/m3)",
+    "da": "O3 - ozon (μg/m3)",
+    "pl": "O3 - ozon (μg/m3)",
+    "ru": "O3 - озон (μg/m3)",
+    "ar": "O3 - الأوزون (μg/m3)",
+    "ko": "O3 - 오존 (μg/m3)"
   },
   "decimals": 2,
   "getable": true,
